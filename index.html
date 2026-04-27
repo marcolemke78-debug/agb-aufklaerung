@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Was du wirklich zustimmst – WhatsApp & Snapchat AGB für die 7./8. Klasse</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg: #0a0e1a;
+  --bg-card: rgba(255,255,255,0.04);
+  --bg-card-hover: rgba(255,255,255,0.08);
+  --text: #e8eaf0;
+  --text-dim: #8892a4;
+  --whatsapp: #25D366;
+  --snap: #FFFC00;
+  --snap-dim: #f5d800;
+  --compare: #06b6d4;
+  --red: #ef4444;
+  --orange: #f97316;
+  --purple: #a855f7;
+  --transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; }
+h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
+
+#progress-bar {
+  position: fixed; top: 0; left: 0; height: 3px; z-index: 1000;
+  background: linear-gradient(90deg, var(--whatsapp), var(--snap), var(--compare));
+  transition: width 0.4s ease;
+}
+
+#nav-dots {
+  position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 900;
+  display: flex; flex-direction: column; gap: 6px; align-items: center;
+}
+.nav-dot {
+  width: 10px; height: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3);
+  background: transparent; cursor: pointer; transition: all 0.3s ease;
+}
+.nav-dot.active { transform: scale(1.3); }
+.nav-dot:hover { border-color: rgba(255,255,255,0.7); transform: scale(1.2); }
+
+#slide-counter {
+  position: fixed; bottom: 24px; right: 28px; z-index: 900;
+  font-family: 'Outfit', sans-serif; font-size: 13px; color: var(--text-dim); letter-spacing: 1px;
+}
+
+.nav-arrow {
+  position: fixed; top: 50%; z-index: 900; transform: translateY(-50%);
+  width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05); color: var(--text-dim); font-size: 20px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s ease; backdrop-filter: blur(8px);
+}
+.nav-arrow:hover { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.3); }
+#arrow-left { left: 20px; }
+#arrow-right { right: 60px; }
+
+#overview-btn {
+  position: fixed; bottom: 24px; left: 28px; z-index: 900;
+  width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05); color: var(--text-dim); font-size: 16px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;
+}
+#overview-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+#slides-container { width: 100vw; height: 100vh; position: relative; }
+.slide {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  display: flex; align-items: flex-start; justify-content: center;
+  opacity: 0; transform: translateX(60px); pointer-events: none;
+  transition: opacity var(--transition), transform var(--transition);
+  padding: 60px 100px 60px 60px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.slide.active { opacity: 1; transform: translateX(0); pointer-events: all; }
+.slide.exit-left { opacity: 0; transform: translateX(-60px); }
+
+.title-slide, .section-intro {
+  align-items: center; justify-content: flex-start;
+}
+.title-content, .section-intro-content, .slide > .content-wrap { margin-block: auto; }
+
+#slides-container.overview {
+  display: flex; flex-wrap: wrap; gap: 16px; padding: 40px; overflow-y: auto;
+  align-items: flex-start; justify-content: center;
+}
+#slides-container.overview .slide {
+  position: relative; width: 280px; height: 180px; opacity: 1;
+  transform: scale(1) translateX(0); pointer-events: all;
+  border: 2px solid rgba(255,255,255,0.1); border-radius: 12px;
+  cursor: pointer; transition: all 0.3s ease; padding: 12px;
+  flex-shrink: 0; overflow: hidden;
+}
+#slides-container.overview .slide:hover { border-color: rgba(255,255,255,0.3); transform: scale(1.05); }
+#slides-container.overview .slide.active { border-color: var(--whatsapp); }
+#slides-container.overview .slide * { transform: scale(0.25); transform-origin: top left; pointer-events: none; }
+
+/* TITLE */
+.title-slide { flex-direction: column; text-align: center; position: relative; overflow: hidden; }
+.title-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(37,211,102,0.18) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 30%, rgba(255,252,0,0.12) 0%, transparent 50%),
+              radial-gradient(ellipse at 50% 80%, rgba(6,182,212,0.10) 0%, transparent 50%);
+}
+.title-orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.4; animation: float 8s ease-in-out infinite; }
+.title-orb:nth-child(1) { width: 300px; height: 300px; background: var(--whatsapp); top: 10%; left: 15%; animation-delay: 0s; }
+.title-orb:nth-child(2) { width: 250px; height: 250px; background: var(--snap); top: 50%; right: 20%; animation-delay: -3s; }
+.title-orb:nth-child(3) { width: 200px; height: 200px; background: var(--compare); bottom: 15%; left: 40%; animation-delay: -5s; }
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 15px) scale(0.95); }
+}
+.title-content { position: relative; z-index: 1; }
+.title-content h1 {
+  font-size: 4rem; font-weight: 800; letter-spacing: -1px; line-height: 1.05;
+  background: linear-gradient(135deg, #fff 0%, var(--whatsapp) 40%, var(--snap) 75%, var(--compare) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 20px;
+}
+.title-content .subtitle { font-size: 1.4rem; color: var(--text-dim); font-weight: 300; margin-bottom: 40px; line-height: 1.5; }
+.title-content .author { font-size: 0.85rem; color: rgba(255,255,255,0.4); letter-spacing: 3px; text-transform: uppercase; }
+.title-tags { display: flex; gap: 12px; justify-content: center; margin-top: 32px; flex-wrap: wrap; }
+.title-tag { padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; border: 1px solid; opacity: 0.8; }
+
+/* SECTION INTRO */
+.section-intro { flex-direction: column; text-align: center; }
+.section-number {
+  font-family: 'Outfit', sans-serif; font-size: 9rem; font-weight: 800;
+  opacity: 0.07; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%); line-height: 1;
+}
+.section-intro-content { position: relative; z-index: 1; max-width: 760px; }
+.section-icon { font-size: 4rem; margin-bottom: 24px; display: block; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+.section-intro-content h2 { font-size: 3rem; font-weight: 700; margin-bottom: 28px; letter-spacing: -0.5px; }
+.section-quote {
+  font-size: 1.2rem; font-style: italic; line-height: 1.7; color: var(--text-dim);
+  border-left: 3px solid; padding-left: 24px; text-align: left; max-width: 600px; margin: 0 auto;
+}
+
+/* CONTENT */
+.content-wrap { width: 100%; max-width: 1200px; }
+.content-wrap > h2 {
+  font-size: 2.2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.3px;
+}
+.content-wrap > .lead {
+  font-size: 1.05rem; color: var(--text-dim); margin-bottom: 32px; max-width: 800px; line-height: 1.6;
+}
+.content-grid { display: grid; gap: 16px; }
+
+/* CARDS */
+.fact-card {
+  background: var(--bg-card); border-radius: 14px; padding: 22px 26px;
+  border: 1px solid rgba(255,255,255,0.07); transition: all 0.3s ease;
+  display: flex; gap: 18px; align-items: flex-start;
+}
+.fact-card:hover { background: var(--bg-card-hover); transform: translateX(4px); }
+.fact-num {
+  width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center;
+  justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0;
+  font-family: 'Outfit', sans-serif;
+}
+.fact-body { flex: 1; min-width: 0; }
+.fact-body h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; line-height: 1.3; }
+.fact-body p { font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; }
+.fact-body p strong { color: var(--text); font-weight: 600; }
+
+/* WARN / GOOD / INFO BOXES */
+.warn-box {
+  background: rgba(239,68,68,0.10); border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 14px; padding: 22px 26px; margin-bottom: 14px;
+}
+.warn-box h4 { color: var(--red); font-size: 1.05rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.warn-box p { font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; }
+.warn-box p strong { color: #ffd0d0; }
+
+.good-box {
+  background: rgba(37,211,102,0.10); border: 1px solid rgba(37,211,102,0.3);
+  border-radius: 14px; padding: 22px 26px; margin-bottom: 14px;
+}
+.good-box h4 { color: var(--whatsapp); font-size: 1.05rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.good-box p { font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; }
+.good-box p strong { color: #d8f7e1; }
+
+.info-box {
+  background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.25);
+  border-radius: 14px; padding: 18px 22px; margin-top: 16px;
+}
+.info-box p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.55; }
+.info-box p strong { color: var(--compare); font-weight: 600; }
+
+/* QUIZ / REVEAL */
+.quiz-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 18px;
+  padding: 28px 32px; margin-bottom: 16px; cursor: pointer;
+  transition: all 0.3s ease;
+}
+.quiz-card:hover { border-color: rgba(255,255,255,0.25); }
+.quiz-q {
+  font-size: 1.15rem; font-weight: 600; line-height: 1.5; display: flex; gap: 14px; align-items: flex-start;
+}
+.quiz-icon {
+  font-size: 1.5rem; flex-shrink: 0;
+}
+.quiz-a {
+  max-height: 0; overflow: hidden; transition: max-height 0.5s ease, margin-top 0.3s ease;
+  font-size: 0.95rem; color: var(--text-dim); line-height: 1.65;
+  margin-top: 0;
+}
+.quiz-card.open .quiz-a {
+  max-height: 600px; margin-top: 18px;
+  border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 18px;
+}
+.quiz-card .reveal-hint {
+  font-size: 0.78rem; color: rgba(255,255,255,0.35); margin-top: 12px;
+  letter-spacing: 1px; text-transform: uppercase; font-family: 'Outfit', sans-serif;
+}
+.quiz-card.open .reveal-hint { display: none; }
+.quiz-a strong { color: #fff; }
+.quiz-a .punchline {
+  display: block; margin-top: 12px; padding: 12px 16px;
+  background: rgba(239,68,68,0.12); border-left: 3px solid var(--red); border-radius: 6px;
+  color: #ffd6d6; font-weight: 500;
+}
+
+/* AGB QUOTES */
+.agb-quote {
+  background: rgba(0,0,0,0.3); border-left: 3px solid rgba(255,255,255,0.3);
+  padding: 14px 18px; margin: 14px 0; border-radius: 6px;
+  font-family: 'Inter', monospace; font-size: 0.85rem; color: rgba(255,255,255,0.7);
+  line-height: 1.55; font-style: italic;
+}
+.agb-quote::before {
+  content: "📜 AGB-Originaltext"; display: block;
+  font-family: 'Outfit', sans-serif; font-style: normal;
+  font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase;
+  color: rgba(255,255,255,0.4); margin-bottom: 8px;
+}
+
+/* COMPARE TABLE */
+.compare-table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  background: var(--bg-card); border-radius: 14px; overflow: hidden;
+  font-size: 0.95rem; margin-top: 8px;
+}
+.compare-table th, .compare-table td {
+  padding: 14px 18px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06);
+  vertical-align: top;
+}
+.compare-table th {
+  background: rgba(255,255,255,0.03); font-weight: 600;
+  font-family: 'Outfit', sans-serif; letter-spacing: 0.3px; font-size: 0.95rem;
+}
+.compare-table th:nth-child(2) { color: var(--whatsapp); }
+.compare-table th:nth-child(3) { color: var(--snap-dim); }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover { background: rgba(255,255,255,0.02); }
+.compare-table .label { font-weight: 500; color: #fff; }
+.compare-table .yes { color: var(--whatsapp); font-weight: 600; }
+.compare-table .no { color: var(--red); font-weight: 600; }
+.compare-table .meh { color: var(--orange); font-weight: 600; }
+.compare-table small { display: block; color: var(--text-dim); font-size: 0.8rem; margin-top: 3px; line-height: 1.4; }
+
+/* TAGS */
+.tag {
+  display: inline-block; padding: 3px 10px; border-radius: 6px;
+  font-size: 0.78rem; font-weight: 600; font-family: 'Outfit', sans-serif;
+  margin: 0 2px;
+}
+.tag-warn { background: rgba(239,68,68,0.15); color: var(--red); }
+.tag-info { background: rgba(6,182,212,0.15); color: var(--compare); }
+.tag-wa { background: rgba(37,211,102,0.15); color: var(--whatsapp); }
+.tag-snap { background: rgba(255,252,0,0.15); color: var(--snap-dim); }
+
+/* HOOK STAT */
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 24px; }
+.stat-card {
+  background: var(--bg-card); border-radius: 14px; padding: 24px;
+  border: 1px solid rgba(255,255,255,0.06); text-align: center;
+}
+.stat-num {
+  font-family: 'Outfit', sans-serif; font-size: 2.6rem; font-weight: 800;
+  background: linear-gradient(135deg, #fff, var(--snap-dim));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1.1; margin-bottom: 6px;
+}
+.stat-label { font-size: 0.88rem; color: var(--text-dim); line-height: 1.4; }
+
+/* TIPS LIST */
+.tips-list { list-style: none; padding: 0; }
+.tips-list li {
+  background: var(--bg-card); border-radius: 12px; padding: 16px 20px;
+  margin-bottom: 10px; border-left: 3px solid var(--whatsapp);
+  font-size: 0.95rem; line-height: 1.55; color: var(--text);
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.tips-list li .tip-icon { font-size: 1.4rem; flex-shrink: 0; }
+.tips-list li strong { color: var(--whatsapp); font-weight: 600; }
+
+/* THEME COLORS */
+.theme-wa .fact-num { background: rgba(37,211,102,0.18); color: var(--whatsapp); }
+.theme-wa .section-quote { border-color: var(--whatsapp); }
+.theme-wa .section-intro-content h2 { color: var(--whatsapp); }
+.theme-wa .content-wrap > h2 { color: var(--whatsapp); }
+
+.theme-snap .fact-num { background: rgba(255,252,0,0.20); color: var(--snap-dim); }
+.theme-snap .section-quote { border-color: var(--snap); }
+.theme-snap .section-intro-content h2 { color: var(--snap); }
+.theme-snap .content-wrap > h2 { color: var(--snap); }
+.theme-snap .tips-list li { border-left-color: var(--snap); }
+.theme-snap .tips-list li strong { color: var(--snap); }
+
+.theme-compare .fact-num { background: rgba(6,182,212,0.18); color: var(--compare); }
+.theme-compare .section-quote { border-color: var(--compare); }
+.theme-compare .section-intro-content h2 { color: var(--compare); }
+.theme-compare .content-wrap > h2 { color: var(--compare); }
+.theme-compare .tips-list li { border-left-color: var(--compare); }
+.theme-compare .tips-list li strong { color: var(--compare); }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .slide { padding: 56px 16px 88px 16px; }
+  .title-content h1 { font-size: 2.2rem; line-height: 1.15; }
+  .title-content .subtitle { font-size: 0.95rem; }
+  .title-tag { font-size: 0.7rem; padding: 4px 10px; }
+  .title-orb { filter: blur(40px); }
+  .section-icon { font-size: 2.6rem; }
+  .section-intro-content h2 { font-size: 1.9rem; }
+  .section-quote { font-size: 0.95rem; padding-left: 16px; }
+  .content-wrap > h2 { font-size: 1.5rem; }
+  .content-wrap > .lead { font-size: 0.9rem; margin-bottom: 22px; }
+  .fact-card { padding: 16px 18px; gap: 12px; }
+  .fact-num { width: 32px; height: 32px; font-size: 0.9rem; }
+  .fact-body h4 { font-size: 1rem; }
+  .fact-body p { font-size: 0.85rem; }
+  .warn-box, .good-box { padding: 16px 18px; }
+  .warn-box h4, .good-box h4 { font-size: 0.95rem; }
+  .warn-box p, .good-box p { font-size: 0.85rem; }
+  .quiz-card { padding: 20px; }
+  .quiz-q { font-size: 1rem; }
+  .quiz-a { font-size: 0.88rem; }
+  .compare-table { font-size: 0.78rem; display: block; overflow-x: auto; }
+  .compare-table th, .compare-table td { padding: 10px 12px; }
+  .stat-grid { grid-template-columns: 1fr; gap: 12px; }
+  .stat-num { font-size: 2rem; }
+  .nav-arrow { width: 40px; height: 40px; font-size: 18px; top: auto; bottom: 14px; transform: none; }
+  #arrow-left { left: 12px; }
+  #arrow-right { right: 12px; }
+  #nav-dots { right: 6px; gap: 4px; }
+  .nav-dot { width: 7px; height: 7px; border-width: 1.5px; }
+  #slide-counter { top: 12px; bottom: auto; right: 14px; font-size: 11px; }
+  #overview-btn { top: 12px; bottom: auto; left: 14px; width: 30px; height: 30px; font-size: 14px; }
+  #slides-container.overview { padding: 20px 12px; gap: 10px; }
+  #slides-container.overview .slide { width: calc(50% - 6px); height: 140px; padding: 8px; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="nav-dots"></div>
+<div id="slide-counter">1 / 18</div>
+<button class="nav-arrow" id="arrow-left" onclick="prevSlide()">&#8592;</button>
+<button class="nav-arrow" id="arrow-right" onclick="nextSlide()">&#8594;</button>
+<button id="overview-btn" onclick="toggleOverview()" title="Übersicht (Esc)">&#9638;</button>
+
+<div id="slides-container">
+
+<!-- ═══════════ 1: TITLE ═══════════ -->
+<div class="slide title-slide active" data-section="title">
+  <div class="title-bg">
+    <div class="title-orb"></div>
+    <div class="title-orb"></div>
+    <div class="title-orb"></div>
+  </div>
+  <div class="title-content">
+    <h1>Was du wirklich<br>zustimmst</h1>
+    <p class="subtitle">WhatsApp & Snapchat – ein Blick hinter die AGB.<br>Was du verschenkst, wenn du auf "Ich stimme zu" klickst.</p>
+    <div class="title-tags">
+      <span class="title-tag" style="color:var(--whatsapp);border-color:rgba(37,211,102,0.5)">💬 WhatsApp</span>
+      <span class="title-tag" style="color:var(--snap-dim);border-color:rgba(255,252,0,0.5)">👻 Snapchat</span>
+      <span class="title-tag" style="color:var(--compare);border-color:rgba(6,182,212,0.5)">⚖️ Vergleich</span>
+    </div>
+    <p class="author" style="margin-top:40px">Klasse 7 / 8 · Medienbildung · 40 Minuten</p>
+  </div>
+</div>
+
+<!-- ═══════════ 2: HOOK ═══════════ -->
+<div class="slide" data-section="title">
+  <div class="content-wrap">
+    <h2 style="background: linear-gradient(135deg, #fff, var(--snap-dim)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.4rem;">
+      "Ich habe die Bedingungen gelesen und akzeptiere sie."
+    </h2>
+    <p class="lead">
+      Vier Worte, die Millionen Jugendliche jeden Tag anklicken. Aber: Hat das wirklich jemand gelesen?
+    </p>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num">~9.000</div>
+        <div class="stat-label">Wörter in den WhatsApp-AGB<br>(Lesedauer ca. <strong>30 Min</strong>)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">~12.000</div>
+        <div class="stat-label">Wörter in den Snapchat-AGB<br>(Lesedauer ca. <strong>40 Min</strong>)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">&lt; 1 %</div>
+        <div class="stat-label">der Nutzer:innen lesen sie<br>komplett – die meisten gar nicht</div>
+      </div>
+    </div>
+
+    <div class="info-box" style="margin-top:32px">
+      <p>👉 <strong>Heutiges Ziel:</strong> Wir lesen die wichtigsten Stellen für dich – damit du weißt, worauf du dich einlässt. Drei Bereiche: <span class="tag tag-wa">WhatsApp</span> <span class="tag tag-snap">Snapchat</span> <span class="tag tag-info">Vergleich</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 3: WHATSAPP INTRO ═══════════ -->
+<div class="slide section-intro theme-wa" data-section="wa">
+  <div class="section-number">01</div>
+  <div class="section-intro-content">
+    <span class="section-icon">💬</span>
+    <h2>WhatsApp</h2>
+    <blockquote class="section-quote">
+      "Mehr als 2 Milliarden Menschen weltweit chatten täglich über WhatsApp. Das Unternehmen dahinter heißt <strong>Meta</strong> – und gehört auch Facebook und Instagram."
+    </blockquote>
+  </div>
+</div>
+
+<!-- ═══════════ 4: WhatsApp – Mindestalter ═══════════ -->
+<div class="slide theme-wa" data-section="wa">
+  <div class="content-wrap">
+    <h2>Frage 1: Ab wann darfst du WhatsApp nutzen?</h2>
+    <p class="lead">Schätze erst – dann auf die Karte klicken zum Auflösen.</p>
+
+    <div class="quiz-card" onclick="this.classList.toggle('open')">
+      <div class="quiz-q"><span class="quiz-icon">🤔</span><span>WhatsApp sagt selbst: <strong>"Du musst mindestens ___ Jahre alt sein."</strong></span></div>
+      <div class="reveal-hint">▼ Klick zum Auflösen</div>
+      <div class="quiz-a">
+        <strong>Antwort: 13 Jahre</strong> – so steht es in den WhatsApp-AGB.
+        <div class="agb-quote">"Du musst mindestens 13 Jahre alt sein, um unsere Dienste zu nutzen [...] Falls du noch nicht 18 bist, dann bitte einen Elternteil oder Erziehungsberechtigten, diese Nutzungsbedingungen gemeinsam mit dir zu lesen."</div>
+        <span class="punchline">⚠️ <strong>Aber Achtung:</strong> In Deutschland sagt die <strong>DSGVO</strong>: Unter 16 brauchst du eigentlich die Zustimmung deiner Eltern. WhatsApp prüft das aber nicht aktiv – du klickst einfach nur eine Checkbox.</span>
+      </div>
+    </div>
+
+    <div class="quiz-card" onclick="this.classList.toggle('open')">
+      <div class="quiz-q"><span class="quiz-icon">📞</span><span>Wenn du WhatsApp deine Kontakte erlaubst – was passiert dann genau?</span></div>
+      <div class="reveal-hint">▼ Klick zum Auflösen</div>
+      <div class="quiz-a">
+        WhatsApp lädt die <strong>Telefonnummern aus deinem Adressbuch hoch</strong> – auf seine Server.
+        <div class="agb-quote">"Falls nach geltenden Gesetzen zulässig, kannst du [...] uns regelmäßig die Telefonnummern in deinem Mobil-Adressbuch zur Verfügung stellen, darunter sowohl die Nummern von Benutzer*innen unserer Dienste als auch die von deinen sonstigen Kontakten."</div>
+        <span class="punchline">⚠️ <strong>Das heißt:</strong> Auch die Nummer deiner Oma, deines Lehrers, deines Arztes – obwohl die <strong>nie zugestimmt</strong> haben.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 5: WhatsApp – Wem gehören deine Inhalte ═══════════ -->
+<div class="slide theme-wa" data-section="wa">
+  <div class="content-wrap">
+    <h2>Frage 2: Wem gehören deine Inhalte?</h2>
+    <p class="lead">Profilbild, Status-Updates, Videos – kurz: alles was du auf WhatsApp teilst.</p>
+
+    <div class="good-box">
+      <h4>✅ Die gute Nachricht</h4>
+      <p>Deine Inhalte gehören weiterhin <strong>dir</strong>. WhatsApp behauptet nicht, dass sie ihnen gehören.</p>
+    </div>
+
+    <div class="warn-box">
+      <h4>⚠️ Die andere Seite</h4>
+      <p>Du gibst WhatsApp eine <strong>weltweite, kostenlose, übertragbare Lizenz</strong> – sie dürfen deine Inhalte nutzen, kopieren, ändern und an andere Firmen weitergeben.</p>
+      <div class="agb-quote">"Du gewährst WhatsApp eine weltweite, nicht-exklusive, gebührenfreie, unterlizenzierbare und übertragbare Lizenz zur Nutzung, Reproduktion, Verbreitung [...] der Informationen, die du auf bzw. über unsere Dienste hochlädst, übermittelst, speicherst, sendest oder empfängst."</div>
+      <p><strong>Kleiner Trost:</strong> Diese Lizenz ist auf den Zweck "Bereitstellung der Dienste" beschränkt. WhatsApp darf dein Profilbild also nicht auf einer Werbetafel zeigen – aber sie dürfen es speichern, an Server-Dienstleister weitergeben und bis zu 30 Tage auf ihren Servern lagern.</p>
+    </div>
+
+    <div class="info-box">
+      <p>💡 <strong>Was nicht in der Lizenz ist:</strong> Der Inhalt deiner Nachrichten – die sind durch <strong>Ende-zu-Ende-Verschlüsselung</strong> geschützt. WhatsApp kann sie nicht lesen. <span class="tag tag-info">Aber lies die nächste Folie...</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 6: WhatsApp – KI-Falle ═══════════ -->
+<div class="slide theme-wa" data-section="wa">
+  <div class="content-wrap">
+    <h2>Frage 3: Trainiert WhatsApp eine KI mit deinen Nachrichten?</h2>
+    <p class="lead">Seit Mai 2025 trainiert Meta seine KI ("Meta AI") mit Daten aus Facebook und Instagram. Wie ist das bei WhatsApp?</p>
+
+    <div class="quiz-card" onclick="this.classList.toggle('open')">
+      <div class="quiz-q"><span class="quiz-icon">🤖</span><span>Sind deine privaten WhatsApp-Chats vor dem KI-Training sicher?</span></div>
+      <div class="reveal-hint">▼ Klick zum Auflösen</div>
+      <div class="quiz-a">
+        <strong>Jein.</strong> Normale Chats: ja, weil verschlüsselt. <strong>ABER:</strong>
+        <span class="punchline">🚨 <strong>Sobald du mit "Meta AI" in WhatsApp chattest – oder jemand sie in eure Gruppe einlädt – ist die Verschlüsselung weg.</strong> Alles, was du dann schreibst, kann zum Training der KI verwendet werden.</span>
+        <p style="margin-top:14px">Der blaue Kreis 🔵 in WhatsApp ist <strong>nicht abschaltbar</strong>. Du kannst Meta AI nicht aus der App entfernen – nur ignorieren.</p>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <h4>⚠️ Das musst du wissen</h4>
+      <p>Wenn du Meta AI <strong>etwas fragst</strong>, gibst du diesen Inhalt aus der Verschlüsselung heraus. <strong>Beispiel:</strong> Du fragst Meta AI in einer Klassen-Gruppe etwas – plötzlich liest die KI die Nachricht und potenziell den Kontext mit.</p>
+      <p style="margin-top:10px">👉 <strong>Empfehlung:</strong> Meta AI <em>niemals</em> in private oder Klassen-Gruppen einladen.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 7: WhatsApp – Account löschen ═══════════ -->
+<div class="slide theme-wa" data-section="wa">
+  <div class="content-wrap">
+    <h2>Frage 4: Was passiert, wenn du deinen WhatsApp-Account löschst?</h2>
+    <p class="lead">Eine der häufigsten Fragen – die Antwort überrascht viele.</p>
+
+    <div class="quiz-card" onclick="this.classList.toggle('open')">
+      <div class="quiz-q"><span class="quiz-icon">🗑️</span><span>Sind nach dem Löschen wirklich <strong>alle</strong> deine Daten weg?</span></div>
+      <div class="reveal-hint">▼ Klick zum Auflösen</div>
+      <div class="quiz-a">
+        <strong>Nein.</strong> Bestimmte Klauseln aus den AGB <strong>bleiben für immer bestehen</strong>:
+        <div class="agb-quote">"Die folgenden Bestimmungen bleiben auch nach einer Kündigung oder Beendigung deiner Beziehung zu WhatsApp bestehen: 'Lizenzen', 'Haftungsausschlüsse und Freistellung', 'Haftungsbeschränkung', 'Beilegung von Streitfällen' [...]"</div>
+        <span class="punchline">⚠️ Das heißt: Die <strong>Lizenz</strong>, die du WhatsApp an deinen Inhalten gegeben hast, gilt weiter. Außerdem werden nicht zugestellte Nachrichten <strong>30 Tage</strong> auf den Servern aufbewahrt.</span>
+        <p style="margin-top:14px">Daten in Backups (z.B. iCloud, Google Drive) sind übrigens <strong>nicht</strong> Ende-zu-Ende-verschlüsselt – außer du aktivierst es ausdrücklich in den Einstellungen.</p>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <p>💡 <strong>Was an Behörden geht:</strong> WhatsApp gibt auf Anfrage von Polizei oder Justiz <strong>Metadaten</strong> heraus: mit wem du wann wie oft geschrieben hast, deine Telefonnummer, IP-Adressen, Geräte. Den <strong>Inhalt</strong> der Nachrichten nicht (wegen E2E-Verschlüsselung).</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 8: SNAPCHAT INTRO ═══════════ -->
+<div class="slide section-intro theme-snap" data-section="snap">
+  <div class="section-number">02</div>
+  <div class="section-intro-content">
+    <span class="section-icon">👻</span>
+    <h2>Snapchat</h2>
+    <blockquote class="section-quote">
+      "Die App der verschwindenden Bilder – heißt es. Aber was passiert wirklich mit dem, was du sendest? Spoiler: Es verschwindet weniger, als du denkst."
+    </blockquote>
+  </div>
+</div>
+
+<!-- ═══════════ 9: Snap – Lizenz Hammer ═══════════ -->
+<div class="slide theme-snap" data-section="snap">
+  <div class="content-wrap">
+    <h2>Frage 5: Wem gehören deine Stories, Spotlights und Snap-Map-Posts?</h2>
+    <p class="lead">Hier wird es <strong style="color:var(--red)">dramatisch</strong>. Lies langsam.</p>
+
+    <div class="quiz-card" onclick="this.classList.toggle('open')">
+      <div class="quiz-q"><span class="quiz-icon">⚖️</span><span>Wenn du eine Story postest – was darf Snapchat damit machen?</span></div>
+      <div class="reveal-hint">▼ Klick zum Auflösen</div>
+      <div class="quiz-a">
+        <strong>Praktisch alles. Für immer. Ohne dich zu fragen.</strong>
+        <div class="agb-quote">"Da öffentliche Inhalte grundsätzlich öffentlich sind, gewährst du Snap [...] ein <strong>uneingeschränktes, weltweites, gebührenfreies, unwiderrufliches und unbefristetes</strong> Recht und eine Lizenz, daraus abgeleitete Werke zu erstellen, sie zu bewerben, anzuzeigen, auszustrahlen, [...] mit Grafiken und akustischen Effekten zu unterlegen [...] für <strong>kommerzielle und nicht-kommerzielle Zwecke</strong> öffentlich anzuzeigen."</div>
+        <span class="punchline">🚨 <strong>Übersetzt:</strong><br>
+          • <strong>uneingeschränkt</strong> = sie dürfen alles damit machen<br>
+          • <strong>unwiderruflich</strong> = du kannst es nie wieder zurücknehmen<br>
+          • <strong>unbefristet</strong> = für immer, auch wenn du den Account löschst<br>
+          • <strong>kommerziell</strong> = sie verdienen Geld damit – du bekommst <strong>nichts</strong>
+        </span>
+        <p style="margin-top:14px"><strong>Was zählt als "öffentlicher Inhalt"?</strong> Spotlight-Videos, Snap Map-Posts, öffentliche Stories, Inhalte in Lens Studio, sogar dein <strong>Bitmoji-Avatar</strong>!</p>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <h4>🎬 Kleines Beispiel</h4>
+      <p>Du tanzt in deinem Zimmer und postest das auf Spotlight. Snap könnte dieses Video <strong>theoretisch</strong> in einer Werbekampagne verwenden, in einem fremden Film verarbeiten, an Geschäftspartner verkaufen oder in 20 Jahren noch zeigen – ganz egal, ob du den Account längst gelöscht hast. Du bekommst <strong>keinen einzigen Cent</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 10: Snap – Verschwinden Snaps wirklich? ═══════════ -->
+<div class="slide theme-snap" data-section="snap">
+  <div class="content-wrap">
+    <h2>Frage 6: Verschwinden Snaps wirklich nach 24 Stunden?</h2>
+    <p class="lead">Der Mythos, mit dem Snapchat groß wurde.</p>
+
+    <div class="quiz-card" onclick="this.classList.toggle('open')">
+      <div class="quiz-q"><span class="quiz-icon">⏳</span><span>Wie lange speichert Snapchat <strong>öffentliche</strong> Inhalte (Stories, Spotlight, Snap Map)?</span></div>
+      <div class="reveal-hint">▼ Klick zum Auflösen</div>
+      <div class="quiz-a">
+        <strong>Auf "unbestimmte Zeit"</strong> – steht so wörtlich in den AGB.
+        <div class="agb-quote">"Die von dir gewährten Lizenzen für öffentliche Inhalte gelten so lange, wie sich die öffentlichen Inhalte in den Services befinden, und für einen angemessenen Zeitraum, nachdem du die öffentlichen Inhalte von den Services entfernt oder gelöscht hast (vorausgesetzt, wir können <strong>Serverkopien deiner öffentlichen Inhalte auf unbestimmte Zeit aufbewahren</strong>)."</div>
+        <span class="punchline">😱 Das heißt: Auch wenn du eine Story löschst – die Server-Kopie bleibt. <strong>Für immer.</strong></span>
+      </div>
+    </div>
+
+    <div class="quiz-card" onclick="this.classList.toggle('open')">
+      <div class="quiz-q"><span class="quiz-icon">📁</span><span>Was ist mit "Memorys" – dem persönlichen Snap-Speicher?</span></div>
+      <div class="reveal-hint">▼ Klick zum Auflösen</div>
+      <div class="quiz-a">
+        Memorys-Inhalte werden <strong>dauerhaft auf Snap-Servern</strong> gespeichert. Außerdem darf Snap <strong>jederzeit</strong> auf alle deine Inhalte zugreifen.
+        <div class="agb-quote">"Obwohl wir nicht dazu verpflichtet sind, dürfen wir <strong>jederzeit und aus beliebigem Grund</strong> auf deine Inhalte zugreifen und diese prüfen, einsehen und löschen [...]"</div>
+        <span class="punchline">⚠️ Snap kann also – wenn sie wollen – jeden deiner Snaps lesen, ansehen, prüfen. WhatsApp kann das wegen der Verschlüsselung <strong>nicht</strong>.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 11: Snap – My AI & Snap Map ═══════════ -->
+<div class="slide theme-snap" data-section="snap">
+  <div class="content-wrap">
+    <h2>Frage 7: Was passiert mit My AI und Snap Map?</h2>
+    <p class="lead">Zwei Funktionen, die fast jede:r nutzt – und die viel Daten verschlucken.</p>
+
+    <div class="warn-box">
+      <h4>🤖 My AI – Snapchats KI-Chatbot</h4>
+      <p>Alles, was du My AI schickst (<strong>Texte, Bilder, Audios, sogar deinen Standort</strong>), gilt laut AGB als "Inhalt" – und damit greifen <strong>genau die Lizenzen</strong> von Folie 9. Snap darf das also für KI-Training, Werbung und neue Produkte verwenden.</p>
+      <div class="agb-quote">"Alle Inputs und Outputs werden für die Zwecke dieser Bedingungen als Inhalte behandelt, die du an die Services übermittelst, und dementsprechend gelten alle Rechte und Lizenzen, die uns gewährt wurden [...]"</div>
+    </div>
+
+    <div class="warn-box">
+      <h4>🗺️ Snap Map – dein Standort, live</h4>
+      <p>Snap Map zeigt deinen <strong>Live-Standort</strong> an deine Freunde – außer du aktivierst den <strong>Geistmodus</strong>. Inhalte, die du auf Snap Map postest, sind <strong>"öffentliche Inhalte"</strong> mit der unbefristeten Lizenz von Folie 9.</p>
+      <p style="margin-top:10px">2025 hat Snap zusätzlich eine Einstellung eingeführt, die <strong>standardmäßig aktiviert</strong> ist: KI-Training mit allem, was öffentlich auf Spotlight und Snap Map landet.</p>
+    </div>
+
+    <div class="info-box">
+      <p>🛡️ <strong>Was du JETZT machen kannst:</strong> Einstellungen → "Wer kann meinen Standort sehen?" → <strong>Geistmodus</strong> aktivieren. (In Snap Map oben rechts auf das Zahnrad tippen.)</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 12: Snap – Strafverfolgung & Klagen ═══════════ -->
+<div class="slide theme-snap" data-section="snap">
+  <div class="content-wrap">
+    <h2>Frage 8: Was, wenn du dich beschwerst – oder die Polizei anfragt?</h2>
+    <p class="lead">Jetzt wird es richtig unangenehm.</p>
+
+    <div class="warn-box">
+      <h4>👮 Strafverfolgungsbehörden</h4>
+      <p>Snap kann von sich aus die Polizei oder andere Behörden informieren – und Daten weitergeben.</p>
+      <div class="agb-quote">"Außerdem können wir Dritte benachrichtigen – einschließlich Strafverfolgungsbehörden – sowie diesen Dritten Daten und andere Informationen in Bezug auf deinen Account zur Verfügung stellen."</div>
+    </div>
+
+    <div class="warn-box">
+      <h4>⚖️ Wenn du Snap verklagen willst – geht nicht.</h4>
+      <p>Du hast (außerhalb der EU) auf das Recht verzichtet, Snap vor einem Gericht zu verklagen. Stattdessen: <strong>Schiedsverfahren in den USA</strong>. Auch <strong>Sammelklagen sind verboten</strong>.</p>
+      <div class="agb-quote">"DU UND SNAP VEREINBAREN, DASS [...] STREITIGKEITEN ZWISCHEN UNS DURCH EIN VERBINDLICHES SCHIEDSVERFAHREN BEIGELEGT WERDEN, UND DASS DU UND SNAP AUF JEDES RECHT ZUR BETEILIGUNG AN SAMMELKLAGEN [...] VERZICHTEN."</div>
+    </div>
+
+    <div class="warn-box">
+      <h4>💸 Maximale Haftung: 100 US-Dollar</h4>
+      <p>Wenn Snap für einen Schaden bei dir verantwortlich ist, <strong>haften sie maximal mit 100 USD</strong>. Egal, wie groß der Schaden ist.</p>
+      <div class="agb-quote">"KEINESFALLS ÜBERSTEIGT UNSERE GESAMTHAFTUNG FÜR ALLE FORDERUNGEN IN BEZUG AUF DIE SERVICES 100 USD [...]"</div>
+    </div>
+
+    <div class="info-box">
+      <p>💡 <strong>Wichtig:</strong> Für Nutzer:innen aus der EU gelten teilweise zusätzliche EU-Verbraucherrechte. Aber: Eine Sammelklage gegen Snap führen? Praktisch unmöglich.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 13: VERGLEICH INTRO ═══════════ -->
+<div class="slide section-intro theme-compare" data-section="cmp">
+  <div class="section-number">03</div>
+  <div class="section-intro-content">
+    <span class="section-icon">⚖️</span>
+    <h2>Direkter Vergleich</h2>
+    <blockquote class="section-quote">
+      "Beide Apps wollen deine Daten. Aber sie unterscheiden sich entscheidend darin, was sie damit machen dürfen – und was übrig bleibt, wenn du den Account löschst."
+    </blockquote>
+  </div>
+</div>
+
+<!-- ═══════════ 14: VERGLEICHSTABELLE ═══════════ -->
+<div class="slide theme-compare" data-section="cmp">
+  <div class="content-wrap">
+    <h2>Die wichtigsten Unterschiede auf einen Blick</h2>
+    <p class="lead">Welche App ist datenfreundlicher? Und wo liegen die größten Fallen? Lies die rechte Spalte besonders genau.</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Was?</th>
+          <th>💬 WhatsApp</th>
+          <th>👻 Snapchat</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label">Mindestalter (laut AGB)</td>
+          <td>13 Jahre <small>DSGVO: 16</small></td>
+          <td>13 Jahre <small>DSGVO: 16</small></td>
+        </tr>
+        <tr>
+          <td class="label">Ende-zu-Ende-Verschlüsselung</td>
+          <td class="yes">Ja <small>außer Meta-AI-Chats</small></td>
+          <td class="no">Nein <small>Snap kann mitlesen</small></td>
+        </tr>
+        <tr>
+          <td class="label">Lizenz an deinen Inhalten</td>
+          <td>begrenzt auf Service-Bereitstellung</td>
+          <td class="no">unwiderruflich, unbefristet, kommerziell <small>(bei öffentlichen Inhalten)</small></td>
+        </tr>
+        <tr>
+          <td class="label">Verdienst du an deinen Posts mit?</td>
+          <td>—</td>
+          <td class="no">Nein – kein Cent <small>auch wenn Snap damit Geld macht</small></td>
+        </tr>
+        <tr>
+          <td class="label">KI-Training mit deinen Daten</td>
+          <td class="meh">Nur über Meta-AI-Chats</td>
+          <td class="no">Standardmäßig an <small>für Spotlight/Snap Map</small></td>
+        </tr>
+        <tr>
+          <td class="label">Standort wird geteilt</td>
+          <td>nur wenn du explizit sendest</td>
+          <td class="meh">Snap Map ist live <small>außer Geistmodus</small></td>
+        </tr>
+        <tr>
+          <td class="label">Adressbuch wird hochgeladen</td>
+          <td class="meh">Ja, mit allen Nummern</td>
+          <td class="meh">Ja, optional</td>
+        </tr>
+        <tr>
+          <td class="label">Account löschen = Daten weg?</td>
+          <td class="no">Nein – Lizenzen bleiben, 30-Tage-Speicherung</td>
+          <td class="no">Nein – Server-Kopien für "unbestimmte Zeit"</td>
+        </tr>
+        <tr>
+          <td class="label">Datenweitergabe an Behörden</td>
+          <td>Metadaten ja, Inhalte nein</td>
+          <td class="no">Inhalte und Daten möglich</td>
+        </tr>
+        <tr>
+          <td class="label">Du kannst klagen</td>
+          <td class="yes">Ja – EU-Recht <small>Gerichte deines Landes</small></td>
+          <td class="no">Nur Schiedsverfahren USA <small>max. 100 USD Haftung</small></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════ 15: TOP 5 AHA ═══════════ -->
+<div class="slide theme-compare" data-section="cmp">
+  <div class="content-wrap">
+    <h2>Die Top 5 Aha-Momente</h2>
+    <p class="lead">Wenn du dir nur fünf Dinge merkst, dann diese.</p>
+
+    <div class="content-grid">
+      <div class="fact-card">
+        <div class="fact-num">1</div>
+        <div class="fact-body">
+          <h4>Du arbeitest gratis für Snapchat</h4>
+          <p>Jede Story, jeder Spotlight-Clip, jedes Bitmoji wird mit einer <strong>unbefristeten, unwiderruflichen, kommerziellen</strong> Lizenz an Snap übergeben. Wenn deine Inhalte Geld machen – du bekommst nichts.</p>
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-num">2</div>
+        <div class="fact-body">
+          <h4>"Ende-zu-Ende-Verschlüsselung" gilt nicht überall</h4>
+          <p>WhatsApp: ja, außer du chattest mit Meta AI. Snapchat: <strong>gar nicht</strong> – Snap kann jederzeit mitlesen. Die App ist <em>nicht</em> wie WhatsApp.</p>
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-num">3</div>
+        <div class="fact-body">
+          <h4>Snaps verschwinden NICHT</h4>
+          <p>Öffentliche Inhalte werden auf "<strong>unbestimmte Zeit</strong>" auf Snap-Servern gespeichert – auch wenn du sie löschst. Memorys ohnehin.</p>
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-num">4</div>
+        <div class="fact-body">
+          <h4>Mindestalter ist eine Lüge</h4>
+          <p>Beide Apps sagen "ab 13" – aber in Deutschland brauchst du laut DSGVO die Zustimmung deiner Eltern, wenn du unter 16 bist. Niemand prüft das aktiv.</p>
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-num">5</div>
+        <div class="fact-body">
+          <h4>Account löschen reicht NICHT</h4>
+          <p>Lizenzen bleiben bestehen. Server-Kopien bleiben (Snap). Deine Daten in Backups bleiben. Wer einmal etwas gepostet hat, bekommt es nicht mehr 100% zurück.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 16: Was kannst du tun? ═══════════ -->
+<div class="slide theme-compare" data-section="cmp">
+  <div class="content-wrap">
+    <h2>Was kannst du jetzt konkret tun?</h2>
+    <p class="lead">Nicht alles ist verloren. Hier die wichtigsten Hebel, die du noch in der Hand hast.</p>
+
+    <ul class="tips-list">
+      <li><span class="tip-icon">👻</span><span><strong>Snap Map → Geistmodus aktivieren.</strong> Sofort. Niemand außer dir muss wissen, wo du gerade bist. Einstellungen → Snap Map → Geistmodus.</span></li>
+      <li><span class="tip-icon">🤖</span><span><strong>Meta AI nicht in Gruppen einladen.</strong> Sobald sie drin ist, geht die E2E-Verschlüsselung verloren – für alle Mitglieder.</span></li>
+      <li><span class="tip-icon">📷</span><span><strong>Stories &amp; Spotlight bewusst posten.</strong> Frag dich vorher: <em>"Wäre das auch noch in 10 Jahren ok – wenn meine Eltern, mein zukünftiger Arbeitgeber oder Snap selbst es zeigt?"</em></span></li>
+      <li><span class="tip-icon">📞</span><span><strong>Adressbuch-Zugriff überprüfen.</strong> Einstellungen deines Handys → App-Berechtigungen. Du musst WhatsApp nicht alle Kontakte freigeben.</span></li>
+      <li><span class="tip-icon">🔒</span><span><strong>WhatsApp-Backup verschlüsseln.</strong> Einstellungen → Chats → Backup → Ende-zu-Ende-verschlüsseltes Backup aktivieren. Sonst sind deine Chats unverschlüsselt in iCloud / Google Drive.</span></li>
+      <li><span class="tip-icon">🧠</span><span><strong>Lies die AGB beim nächsten Mal wenigstens kurz an.</strong> Die wichtigsten Punkte stehen meistens in der "Zusammenfassung" am Anfang jedes Abschnitts.</span></li>
+      <li><span class="tip-icon">👨‍👩‍👧</span><span><strong>Sprich mit deinen Eltern.</strong> Sie haben das Recht, mitzuentscheiden – und können dir bei Konflikten oder Cybermobbing helfen.</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════ 17: REFLEXION ═══════════ -->
+<div class="slide theme-compare" data-section="cmp">
+  <div class="content-wrap">
+    <h2>Frag dich selbst</h2>
+    <p class="lead">Diese Fragen haben keine "richtige" Antwort. Aber sie sind wichtig.</p>
+
+    <div class="content-grid">
+      <div class="fact-card">
+        <div class="fact-num">?</div>
+        <div class="fact-body">
+          <h4>Würdest du diesen Vertrag auf Papier unterschreiben?</h4>
+          <p>30 Seiten, Anwaltsdeutsch, Verzicht auf Rechte, unbefristete Lizenzen – würdest du das in der Bank oder beim Handyvertrag auch unterschreiben, ohne zu lesen?</p>
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-num">?</div>
+        <div class="fact-body">
+          <h4>Wem gehört dein digitales Ich?</h4>
+          <p>Dein Profilbild, deine Stimme, dein Bitmoji-Avatar – sind das eigentlich noch <em>du</em>, wenn du es einer Firma überlässt?</p>
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-num">?</div>
+        <div class="fact-body">
+          <h4>Was wäre, wenn unter 16 wirklich verboten wäre?</h4>
+          <p>Sollten Apps für unter 16-Jährige stärker reguliert oder gar verboten werden – wie es Australien jetzt versucht? Was würde verloren gehen, was gewonnen?</p>
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-num">?</div>
+        <div class="fact-body">
+          <h4>Was würdest du jetzt anders machen?</h4>
+          <p>Was hast du in den letzten 40 Minuten gelernt, das du sofort umsetzen willst? Schreib es auf dein Arbeitsblatt.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 18: ENDE ═══════════ -->
+<div class="slide title-slide" data-section="title">
+  <div class="title-bg">
+    <div class="title-orb"></div>
+    <div class="title-orb"></div>
+    <div class="title-orb"></div>
+  </div>
+  <div class="title-content">
+    <h1>Du hast jetzt<br>die Wahl.</h1>
+    <p class="subtitle">"Ich akzeptiere" ist eine Entscheidung – keine Formalität.<br>Beim nächsten Klick weißt du, was du tust.</p>
+    <div class="title-tags">
+      <span class="title-tag" style="color:var(--whatsapp);border-color:rgba(37,211,102,0.5)">📞 Sprich mit deinen Eltern</span>
+      <span class="title-tag" style="color:var(--snap-dim);border-color:rgba(255,252,0,0.5)">👻 Geistmodus an</span>
+      <span class="title-tag" style="color:var(--compare);border-color:rgba(6,182,212,0.5)">🧠 Bewusst posten</span>
+    </div>
+    <p class="author" style="margin-top:40px">Quellen: WhatsApp-Nutzungsbedingungen · Snap Servicebestimmungen · Verbraucherzentrale · LDI NRW</p>
+  </div>
+</div>
+
+</div>
+
+<script>
+let currentSlide = 0;
+let isOverview = false;
+const slides = document.querySelectorAll('.slide');
+const totalSlides = slides.length;
+const navDots = document.getElementById('nav-dots');
+
+// Section-Farben
+const sectionColors = {
+  'title': 'rgba(255,255,255,0.7)',
+  'wa': 'var(--whatsapp)',
+  'snap': 'var(--snap)',
+  'cmp': 'var(--compare)'
+};
+
+// Navigation Dots erzeugen
+slides.forEach((slide, idx) => {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot';
+  dot.dataset.slide = idx;
+  dot.dataset.section = slide.dataset.section;
+  dot.addEventListener('click', () => goToSlide(idx));
+  navDots.appendChild(dot);
+});
+
+function updateUI() {
+  document.getElementById('progress-bar').style.width = ((currentSlide) / (totalSlides - 1)) * 100 + '%';
+  document.getElementById('slide-counter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+  document.querySelectorAll('.nav-dot').forEach(dot => {
+    const idx = parseInt(dot.dataset.slide);
+    dot.classList.toggle('active', idx === currentSlide);
+    if (idx === currentSlide) {
+      const section = slides[currentSlide].dataset.section;
+      const c = sectionColors[section] || 'rgba(255,255,255,0.7)';
+      dot.style.background = c;
+      dot.style.borderColor = c;
+    } else {
+      dot.style.background = '';
+      dot.style.borderColor = '';
+    }
+  });
+}
+
+function goToSlide(idx, direction) {
+  if (idx < 0 || idx >= totalSlides || idx === currentSlide) return;
+  if (isOverview) { toggleOverview(); }
+  const dir = direction || (idx > currentSlide ? 'next' : 'prev');
+  const prev = currentSlide;
+
+  slides[prev].classList.remove('active');
+  if (dir === 'next') slides[prev].classList.add('exit-left');
+
+  slides[idx].style.transition = 'none';
+  slides[idx].style.opacity = '0';
+  slides[idx].style.transform = dir === 'next' ? 'translateX(60px)' : 'translateX(-60px)';
+  void slides[idx].offsetWidth;
+  slides[idx].style.transition = '';
+  slides[idx].style.opacity = '';
+  slides[idx].style.transform = '';
+  slides[idx].classList.add('active');
+
+  setTimeout(() => { slides[prev].classList.remove('exit-left'); }, 550);
+
+  currentSlide = idx;
+  updateUI();
+}
+
+function nextSlide() { goToSlide(currentSlide + 1, 'next'); }
+function prevSlide() { goToSlide(currentSlide - 1, 'prev'); }
+
+function toggleOverview() {
+  const container = document.getElementById('slides-container');
+  isOverview = !isOverview;
+  if (isOverview) {
+    container.classList.add('overview');
+    slides.forEach((s, i) => {
+      s.classList.add('active');
+      s.style.transform = '';
+      s.onclick = () => { goToSlide(i); };
+    });
+  } else {
+    container.classList.remove('overview');
+    slides.forEach((s, i) => {
+      s.onclick = null;
+      if (i !== currentSlide) s.classList.remove('active');
+    });
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prevSlide(); }
+  if (e.key === 'Escape') { e.preventDefault(); toggleOverview(); }
+  if (e.key === 'Home') { e.preventDefault(); goToSlide(0); }
+  if (e.key === 'End') { e.preventDefault(); goToSlide(totalSlides - 1); }
+});
+
+let touchStartX = 0, touchStartY = 0;
+document.addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+});
+document.addEventListener('touchend', (e) => {
+  const diffX = touchStartX - e.changedTouches[0].clientX;
+  const diffY = touchStartY - e.changedTouches[0].clientY;
+  if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+    diffX > 0 ? nextSlide() : prevSlide();
+  }
+});
+
+updateUI();
+</script>
+</body>
+</html>
