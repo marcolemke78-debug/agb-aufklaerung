@@ -24,6 +24,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 19px; }  /* Beamer-Basis: alles in rem skaliert ~19% größer als Default */
 html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; }
 h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
 
@@ -167,7 +168,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
 }
 .fact-body { flex: 1; min-width: 0; }
 .fact-body h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; line-height: 1.3; }
-.fact-body p { font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; }
+.fact-body p { font-size: 1.05rem; color: var(--text-dim); line-height: 1.6; }
 .fact-body p strong { color: var(--text); font-weight: 600; }
 
 /* WARN / GOOD / INFO BOXES */
@@ -176,7 +177,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
   border-radius: 14px; padding: 22px 26px; margin-bottom: 14px;
 }
 .warn-box h4 { color: var(--red); font-size: 1.05rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-.warn-box p { font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; }
+.warn-box p { font-size: 1.05rem; color: var(--text-dim); line-height: 1.6; }
 .warn-box p strong { color: #ffd0d0; }
 
 .good-box {
@@ -184,14 +185,14 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
   border-radius: 14px; padding: 22px 26px; margin-bottom: 14px;
 }
 .good-box h4 { color: var(--whatsapp); font-size: 1.05rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-.good-box p { font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; }
+.good-box p { font-size: 1.05rem; color: var(--text-dim); line-height: 1.6; }
 .good-box p strong { color: #d8f7e1; }
 
 .info-box {
   background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.25);
   border-radius: 14px; padding: 18px 22px; margin-top: 16px;
 }
-.info-box p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.55; }
+.info-box p { font-size: 1.02rem; color: var(--text-dim); line-height: 1.6; }
 .info-box p strong { color: var(--compare); font-weight: 600; }
 
 /* QUIZ / REVEAL */
@@ -210,7 +211,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
 }
 .quiz-a {
   max-height: 0; overflow: hidden; transition: max-height 0.5s ease, margin-top 0.3s ease;
-  font-size: 0.95rem; color: var(--text-dim); line-height: 1.65;
+  font-size: 1.08rem; color: var(--text-dim); line-height: 1.65;
   margin-top: 0;
 }
 .quiz-card.open .quiz-a {
@@ -218,7 +219,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
   border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 18px;
 }
 .quiz-card .reveal-hint {
-  font-size: 0.78rem; color: rgba(255,255,255,0.35); margin-top: 12px;
+  font-size: 0.88rem; color: rgba(255,255,255,0.4); margin-top: 12px;
   letter-spacing: 1px; text-transform: uppercase; font-family: 'Outfit', sans-serif;
 }
 .quiz-card.open .reveal-hint { display: none; }
@@ -233,21 +234,21 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
 .agb-quote {
   background: rgba(0,0,0,0.3); border-left: 3px solid rgba(255,255,255,0.3);
   padding: 14px 18px; margin: 14px 0; border-radius: 6px;
-  font-family: 'Inter', monospace; font-size: 0.85rem; color: rgba(255,255,255,0.7);
-  line-height: 1.55; font-style: italic;
+  font-family: 'Inter', monospace; font-size: 1rem; color: rgba(255,255,255,0.78);
+  line-height: 1.6; font-style: italic;
 }
 .agb-quote::before {
   content: "📜 AGB-Originaltext"; display: block;
   font-family: 'Outfit', sans-serif; font-style: normal;
-  font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase;
-  color: rgba(255,255,255,0.4); margin-bottom: 8px;
+  font-size: 0.82rem; letter-spacing: 1px; text-transform: uppercase;
+  color: rgba(255,255,255,0.45); margin-bottom: 8px;
 }
 
 /* COMPARE TABLE */
 .compare-table {
   width: 100%; border-collapse: separate; border-spacing: 0;
   background: var(--bg-card); border-radius: 14px; overflow: hidden;
-  font-size: 0.95rem; margin-top: 8px;
+  font-size: 1.05rem; margin-top: 8px;
 }
 .compare-table th, .compare-table td {
   padding: 14px 18px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -265,12 +266,12 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
 .compare-table .yes { color: var(--whatsapp); font-weight: 600; }
 .compare-table .no { color: var(--red); font-weight: 600; }
 .compare-table .meh { color: var(--orange); font-weight: 600; }
-.compare-table small { display: block; color: var(--text-dim); font-size: 0.8rem; margin-top: 3px; line-height: 1.4; }
+.compare-table small { display: block; color: var(--text-dim); font-size: 0.9rem; margin-top: 3px; line-height: 1.4; }
 
 /* TAGS */
 .tag {
   display: inline-block; padding: 3px 10px; border-radius: 6px;
-  font-size: 0.78rem; font-weight: 600; font-family: 'Outfit', sans-serif;
+  font-size: 0.88rem; font-weight: 600; font-family: 'Outfit', sans-serif;
   margin: 0 2px;
 }
 .tag-warn { background: rgba(239,68,68,0.15); color: var(--red); }
@@ -290,14 +291,14 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   line-height: 1.1; margin-bottom: 6px;
 }
-.stat-label { font-size: 0.88rem; color: var(--text-dim); line-height: 1.4; }
+.stat-label { font-size: 1rem; color: var(--text-dim); line-height: 1.45; }
 
 /* TIPS LIST */
 .tips-list { list-style: none; padding: 0; }
 .tips-list li {
   background: var(--bg-card); border-radius: 12px; padding: 16px 20px;
   margin-bottom: 10px; border-left: 3px solid var(--whatsapp);
-  font-size: 0.95rem; line-height: 1.55; color: var(--text);
+  font-size: 1.08rem; line-height: 1.6; color: var(--text);
   display: flex; gap: 12px; align-items: flex-start;
 }
 .tips-list li .tip-icon { font-size: 1.4rem; flex-shrink: 0; }
@@ -329,6 +330,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
 
 /* MOBILE */
 @media (max-width: 768px) {
+  html { font-size: 16px; }  /* auf Mobile zurück auf normale Basis, sonst sprengt es das Layout */
   .slide { padding: 56px 16px 88px 16px; }
   .title-content h1 { font-size: 2.2rem; line-height: 1.15; }
   .title-content .subtitle { font-size: 0.95rem; }
