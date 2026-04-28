@@ -596,14 +596,14 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
   margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
 }
 .beforeafter-stage {
-  position: relative; min-height: 130px;
+  position: relative; min-height: 170px;
   background: rgba(0,0,0,0.25); border-radius: 12px;
-  padding: 18px; overflow: hidden;
+  padding: 22px; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
   text-align: center;
 }
 .beforeafter-step {
-  position: absolute; inset: 18px; display: flex;
+  position: absolute; inset: 22px; display: flex;
   flex-direction: column; align-items: center; justify-content: center;
   opacity: 0; transition: opacity 0.4s ease;
   pointer-events: none;
@@ -616,8 +616,8 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
 .ba-step-5 { color: var(--red); }
 .ba-step-5 .ba-text { color: #ffd6d6; }
 .beforeafter-progress {
-  position: absolute; left: 18px; right: 18px; bottom: 12px;
-  height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;
+  margin-top: 12px; height: 6px;
+  background: rgba(255,255,255,0.08); border-radius: 3px;
   overflow: hidden;
 }
 .beforeafter-progress-fill {
@@ -780,7 +780,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
   .addr-anim-btn { font-size: 0.85rem; }
   .agb-decoder { font-size: 0.88rem; }
   .decode-translation { font-size: 0.88rem; }
-  .beforeafter-stage { min-height: 110px; padding: 12px; }
+  .beforeafter-stage { min-height: 150px; padding: 16px; }
   .ba-icon { font-size: 2.2rem; }
   .ba-text { font-size: 0.95rem; }
   .ba-sub { font-size: 0.82rem; }
@@ -1201,8 +1201,8 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
           <div class="ba-text">20 Jahre später läuft es noch.</div>
           <div class="ba-sub">Du hast den Account längst gelöscht. Egal. Du bekommst 0 Cent.</div>
         </div>
-        <div class="beforeafter-progress"><div class="beforeafter-progress-fill" id="ba-progress"></div></div>
       </div>
+      <div class="beforeafter-progress"><div class="beforeafter-progress-fill" id="ba-progress"></div></div>
       <div class="beforeafter-controls">
         <div class="beforeafter-slider-wrap">
           <input type="range" class="beforeafter-slider" min="1" max="5" value="1" step="1" id="ba-slider">
