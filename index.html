@@ -12,7 +12,8 @@
   --bg-card: rgba(255,255,255,0.04);
   --bg-card-hover: rgba(255,255,255,0.08);
   --text: #e8eaf0;
-  --text-dim: #8892a4;
+  --text-dim: #b0bbcd;       /* heller fuer Beamer (Kontrast ~7.2:1) */
+  --text-dimmer: #8e99ab;    /* nur fuer sehr dezente Hinweise */
   --whatsapp: #25D366;
   --snap: #FFFC00;
   --snap-dim: #f5d800;
@@ -125,7 +126,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
   margin-bottom: 20px;
 }
 .title-content .subtitle { font-size: 1.4rem; color: var(--text-dim); font-weight: 300; margin-bottom: 40px; line-height: 1.5; }
-.title-content .author { font-size: 0.85rem; color: rgba(255,255,255,0.4); letter-spacing: 3px; text-transform: uppercase; }
+.title-content .author { font-size: 0.85rem; color: rgba(255,255,255,0.65); letter-spacing: 3px; text-transform: uppercase; }
 .title-tags { display: flex; gap: 12px; justify-content: center; margin-top: 32px; flex-wrap: wrap; }
 .title-tag { padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; border: 1px solid; opacity: 0.8; }
 
@@ -234,7 +235,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
 .agb-quote {
   background: rgba(0,0,0,0.3); border-left: 3px solid rgba(255,255,255,0.3);
   padding: 14px 18px; margin: 14px 0; border-radius: 6px;
-  font-family: 'Inter', monospace; font-size: 1rem; color: rgba(255,255,255,0.78);
+  font-family: 'Inter', monospace; font-size: 1rem; color: rgba(255,255,255,0.92);
   line-height: 1.6; font-style: italic;
 }
 .agb-quote::before {
@@ -365,6 +366,429 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
   #slides-container.overview { padding: 20px 12px; gap: 10px; }
   #slides-container.overview .slide { width: calc(50% - 6px); height: 140px; padding: 8px; }
 }
+
+/* ════════════════════════════════════════════════════
+   NEUE INTERAKTIVE KOMPONENTEN
+   ════════════════════════════════════════════════════ */
+
+/* LIVE-COUNTER (Slide 2 Hook) */
+.read-bar-wrap {
+  margin-top: 28px; background: var(--bg-card); border-radius: 14px;
+  padding: 22px 26px; border: 1px solid rgba(255,255,255,0.08);
+}
+.read-bar-wrap h4 {
+  font-size: 1rem; font-weight: 600; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.read-bar-row {
+  display: grid; grid-template-columns: 110px 1fr 80px;
+  gap: 14px; align-items: center; margin-bottom: 12px;
+}
+.read-bar-row:last-child { margin-bottom: 0; }
+.read-bar-label {
+  font-family: 'Outfit', sans-serif; font-weight: 600;
+  display: flex; align-items: center; gap: 8px; font-size: 0.95rem;
+}
+.read-bar-track {
+  position: relative; height: 18px; background: rgba(255,255,255,0.06);
+  border-radius: 9px; overflow: hidden;
+}
+.read-bar-fill {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 0;
+  border-radius: 9px; transition: width 0.05s linear;
+}
+.read-bar-wa .read-bar-fill { background: linear-gradient(90deg, var(--whatsapp), #1ea854); }
+.read-bar-snap .read-bar-fill { background: linear-gradient(90deg, var(--snap), var(--snap-dim)); }
+.read-bar-num {
+  font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.05rem;
+  color: var(--text); text-align: right; font-variant-numeric: tabular-nums;
+}
+.read-bar-controls {
+  display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;
+}
+.read-bar-btn {
+  padding: 10px 18px; border-radius: 10px; cursor: pointer;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.95rem;
+  background: rgba(255,255,255,0.08); color: var(--text);
+  border: 1px solid rgba(255,255,255,0.15); transition: all 0.2s ease;
+}
+.read-bar-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
+.read-bar-btn.primary { background: var(--whatsapp); color: #0a0e1a; border-color: var(--whatsapp); }
+.read-bar-btn.primary:hover { filter: brightness(1.1); }
+.read-bar-status {
+  margin-top: 12px; font-size: 0.95rem; color: var(--text-dim);
+  min-height: 24px; line-height: 1.5;
+}
+.read-bar-status strong { color: var(--snap-dim); }
+
+/* SCHAETZ-MECHANIK (Quiz-Karten) */
+.guess-zone {
+  background: rgba(255,255,255,0.04); border: 1px dashed rgba(255,255,255,0.18);
+  border-radius: 12px; padding: 16px 20px; margin-top: 14px;
+  transition: all 0.4s ease;
+}
+.quiz-card.guessed .guess-zone {
+  background: rgba(255,255,255,0.06); border-style: solid;
+  border-color: rgba(255,255,255,0.12);
+}
+.guess-zone-label {
+  font-family: 'Outfit', sans-serif; font-size: 0.88rem;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text-dim); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.guess-buttons {
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.guess-btn {
+  padding: 12px 22px; border-radius: 10px; cursor: pointer;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 1rem;
+  background: rgba(255,255,255,0.08); color: var(--text);
+  border: 1px solid rgba(255,255,255,0.18);
+  transition: all 0.25s ease; min-width: 100px; min-height: 44px;
+}
+.guess-btn:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.35); transform: translateY(-1px); }
+.guess-btn.selected {
+  background: rgba(6,182,212,0.20); border-color: var(--compare); color: #fff;
+  box-shadow: 0 0 0 2px rgba(6,182,212,0.15);
+}
+.guess-btn.correct { background: rgba(37,211,102,0.22); border-color: var(--whatsapp); color: #fff; }
+.guess-btn.wrong { background: rgba(239,68,68,0.18); border-color: var(--red); color: #fff; opacity: 0.8; }
+
+.guess-slider-wrap { padding: 4px 0 8px; }
+.guess-slider {
+  width: 100%; height: 36px; -webkit-appearance: none; appearance: none;
+  background: transparent; cursor: pointer;
+}
+.guess-slider:focus { outline: none; }
+.guess-slider::-webkit-slider-runnable-track {
+  height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;
+}
+.guess-slider::-moz-range-track {
+  height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;
+}
+.guess-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--compare); border: 3px solid #fff;
+  margin-top: -9px; cursor: grab; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.guess-slider::-moz-range-thumb {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--compare); border: 3px solid #fff;
+  cursor: grab; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.guess-slider-value {
+  text-align: center; font-family: 'Outfit', sans-serif;
+  font-size: 1.6rem; font-weight: 700; color: var(--compare);
+  margin-top: 6px; font-variant-numeric: tabular-nums;
+}
+.guess-slider-scale {
+  display: flex; justify-content: space-between;
+  font-size: 0.78rem; color: var(--text-dim);
+  margin-top: 4px; padding: 0 4px;
+}
+.guess-confirm {
+  margin-top: 14px; padding: 11px 22px; border-radius: 10px;
+  background: var(--compare); color: #0a0e1a;
+  border: none; font-family: 'Outfit', sans-serif; font-weight: 700;
+  font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease;
+  min-height: 44px;
+}
+.guess-confirm:hover { filter: brightness(1.1); }
+.guess-confirm:disabled { opacity: 0.4; cursor: not-allowed; }
+.quiz-card.guessed .guess-confirm { display: none; }
+
+.guess-feedback {
+  display: none; margin-top: 12px; font-size: 0.95rem;
+  font-family: 'Outfit', sans-serif; line-height: 1.5;
+}
+.quiz-card.guessed .guess-feedback { display: block; }
+.guess-feedback .your-tip { color: var(--text-dim); }
+.guess-feedback .real-answer { color: #fff; font-weight: 600; }
+
+.quiz-card.guessed .reveal-hint { color: var(--whatsapp); }
+.quiz-card .quiz-a { /* bleibt wie original, wird per JS ge-toggle-t */ }
+
+/* SVG ADRESSBUCH-ANIMATION (Slide 4) */
+.addr-anim {
+  background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 20px; margin-top: 16px;
+  position: relative; overflow: hidden;
+}
+.addr-anim-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
+}
+.addr-anim-title {
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 1.05rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.addr-anim-btn {
+  padding: 9px 18px; border-radius: 8px; cursor: pointer;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.9rem;
+  background: var(--whatsapp); color: #0a0e1a; border: none;
+  transition: filter 0.2s ease; min-height: 44px;
+}
+.addr-anim-btn:hover { filter: brightness(1.1); }
+.addr-anim-svg {
+  width: 100%; height: 220px; display: block;
+}
+.addr-contact {
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.addr-anim.playing .addr-contact { opacity: 1; }
+.addr-anim-caption {
+  margin-top: 10px; font-size: 0.95rem; color: var(--text-dim);
+  text-align: center; min-height: 24px; transition: color 0.3s ease;
+}
+.addr-anim.done .addr-anim-caption {
+  color: #ffd0d0;
+}
+@keyframes addr-fly {
+  0%   { transform: translate(0, 0); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translate(var(--fly-x), var(--fly-y)); opacity: 1; }
+}
+
+/* AGB-WORT-DECODER (Slide 5 + 9) */
+.agb-decoder {
+  background: rgba(0,0,0,0.3); border-left: 3px solid rgba(255,255,255,0.3);
+  padding: 14px 18px; margin: 14px 0; border-radius: 6px;
+  font-family: 'Inter', monospace; font-size: 1rem;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.7; font-style: italic;
+}
+.agb-decoder::before {
+  content: "📜 AGB-Originaltext · klick die markierten Wörter"; display: block;
+  font-family: 'Outfit', sans-serif; font-style: normal;
+  font-size: 0.82rem; letter-spacing: 1px; text-transform: uppercase;
+  color: rgba(255,255,255,0.6); margin-bottom: 10px;
+}
+.decode-word {
+  background: rgba(168,85,247,0.18); color: #d8b4fe;
+  padding: 1px 6px; border-radius: 4px; font-style: normal;
+  font-weight: 600; cursor: pointer; border-bottom: 1.5px dashed var(--purple);
+  transition: all 0.2s ease; user-select: none;
+}
+.decode-word:hover { background: rgba(168,85,247,0.32); color: #fff; }
+.decode-word.opened {
+  background: rgba(168,85,247,0.32); color: #fff;
+  border-bottom-style: solid;
+}
+.decode-translation {
+  display: none; margin-top: 12px; padding: 12px 16px;
+  background: rgba(168,85,247,0.10); border-left: 3px solid var(--purple);
+  border-radius: 6px; font-style: normal; font-family: 'Inter', sans-serif;
+  font-size: 1rem; color: #f3e8ff; line-height: 1.6;
+}
+.decode-translation strong { color: #fff; }
+.decode-translation.show { display: block; animation: fade-in 0.3s ease; }
+@keyframes fade-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* VORHER/NACHHER-SLIDER (Slide 9) */
+.beforeafter {
+  background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 22px 26px; margin-top: 16px;
+}
+.beforeafter-title {
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 1.05rem;
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.beforeafter-stage {
+  position: relative; min-height: 130px;
+  background: rgba(0,0,0,0.25); border-radius: 12px;
+  padding: 18px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+}
+.beforeafter-step {
+  position: absolute; inset: 18px; display: flex;
+  flex-direction: column; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.beforeafter-step.active { opacity: 1; }
+.ba-icon { font-size: 3rem; margin-bottom: 8px; line-height: 1; }
+.ba-text { font-size: 1.05rem; font-weight: 600; color: var(--text); line-height: 1.4; }
+.ba-sub { font-size: 0.95rem; color: var(--text-dim); margin-top: 4px; }
+.ba-step-1 .ba-icon { filter: hue-rotate(0deg); }
+.ba-step-5 { color: var(--red); }
+.ba-step-5 .ba-text { color: #ffd6d6; }
+.beforeafter-progress {
+  position: absolute; left: 18px; right: 18px; bottom: 12px;
+  height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;
+  overflow: hidden;
+}
+.beforeafter-progress-fill {
+  height: 100%; width: 0; transition: width 0.3s ease;
+  background: linear-gradient(90deg, var(--whatsapp), var(--snap), var(--red));
+}
+.beforeafter-controls {
+  display: grid; grid-template-columns: 1fr; gap: 12px;
+  margin-top: 16px;
+}
+.beforeafter-slider-wrap {
+  display: flex; align-items: center; gap: 12px;
+}
+.beforeafter-slider {
+  flex: 1; -webkit-appearance: none; appearance: none;
+  height: 30px; background: transparent; cursor: pointer;
+}
+.beforeafter-slider:focus { outline: none; }
+.beforeafter-slider::-webkit-slider-runnable-track {
+  height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px;
+}
+.beforeafter-slider::-moz-range-track {
+  height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px;
+}
+.beforeafter-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--snap-dim); border: 3px solid #0a0e1a;
+  margin-top: -9px; cursor: grab; box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.beforeafter-slider::-moz-range-thumb {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--snap-dim); border: 3px solid #0a0e1a;
+  cursor: grab; box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.beforeafter-step-label {
+  font-family: 'Outfit', sans-serif; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--text-dim); min-width: 64px; text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* SNAP MAP MOCK (Slide 11) */
+.snapmap {
+  background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 20px; margin-top: 16px;
+}
+.snapmap-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
+}
+.snapmap-title {
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 1.05rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.snapmap-toggle {
+  display: inline-flex; align-items: center; gap: 10px;
+  cursor: pointer; user-select: none;
+}
+.snapmap-toggle-track {
+  width: 56px; height: 30px; background: rgba(255,255,255,0.12);
+  border-radius: 15px; position: relative; transition: background 0.3s ease;
+}
+.snapmap-toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #fff; transition: transform 0.3s ease;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.snapmap.ghost .snapmap-toggle-track { background: rgba(168,85,247,0.5); }
+.snapmap.ghost .snapmap-toggle-thumb { transform: translateX(26px); }
+.snapmap-toggle-label {
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.95rem;
+  color: var(--text-dim); transition: color 0.3s ease;
+}
+.snapmap.ghost .snapmap-toggle-label { color: var(--purple); }
+.snapmap-stage {
+  position: relative; aspect-ratio: 16 / 7; min-height: 220px;
+  border-radius: 12px; overflow: hidden;
+  background:
+    radial-gradient(circle at 25% 60%, rgba(37,211,102,0.18) 0%, transparent 30%),
+    radial-gradient(circle at 70% 35%, rgba(255,252,0,0.12) 0%, transparent 25%),
+    linear-gradient(135deg, #1a2336 0%, #2a3654 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.snapmap-grid {
+  position: absolute; inset: 0; opacity: 0.15;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+.snapmap-road {
+  position: absolute; background: rgba(255,255,255,0.10);
+}
+.snapmap-road-1 { top: 35%; left: 0; right: 0; height: 8px; }
+.snapmap-road-2 { left: 40%; top: 0; bottom: 0; width: 8px; }
+.snapmap-road-3 { top: 70%; left: 0; right: 0; height: 5px; transform: rotate(-3deg); }
+.snapmap-pin {
+  position: absolute; width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: linear-gradient(135deg, #fff, #e8eaf0);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.snapmap-pin > span {
+  transform: rotate(45deg); display: block;
+}
+.snapmap-pin::after {
+  content: ""; position: absolute; bottom: -4px; left: -4px;
+  width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.4);
+  transform: rotate(45deg);
+}
+.snapmap-pin-name {
+  position: absolute; bottom: 100%; left: 50%;
+  transform: rotate(45deg) translateY(-6px) translateX(-50%);
+  background: rgba(0,0,0,0.7); color: #fff;
+  padding: 3px 9px; border-radius: 8px;
+  font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 600;
+  white-space: nowrap; pointer-events: none;
+}
+.snapmap.ghost .snapmap-pin {
+  opacity: 0; transform: rotate(-45deg) scale(0.4);
+}
+.snapmap-me {
+  position: absolute; top: 50%; left: 50%;
+  width: 50px; height: 50px;
+  border-radius: 50% 50% 50% 0; transform: rotate(-45deg) translate(-50%, -50%);
+  background: linear-gradient(135deg, var(--snap), var(--snap-dim));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; box-shadow: 0 6px 18px rgba(255,252,0,0.35);
+  z-index: 5;
+}
+.snapmap-me > span { transform: rotate(45deg); display: block; }
+.snapmap.ghost .snapmap-me {
+  background: linear-gradient(135deg, #6b21a8, #a855f7);
+  box-shadow: 0 6px 18px rgba(168,85,247,0.4);
+}
+.snapmap-caption {
+  margin-top: 12px; font-size: 0.95rem; color: var(--text-dim);
+  text-align: center; line-height: 1.5; min-height: 24px;
+  transition: color 0.3s ease;
+}
+.snapmap.ghost .snapmap-caption { color: var(--purple); }
+
+/* MOBILE-ANPASSUNGEN fuer neue Komponenten */
+@media (max-width: 768px) {
+  .read-bar-row { grid-template-columns: 80px 1fr 60px; gap: 8px; }
+  .read-bar-label { font-size: 0.8rem; }
+  .read-bar-num { font-size: 0.85rem; }
+  .read-bar-btn { font-size: 0.85rem; padding: 8px 14px; }
+  .guess-zone { padding: 12px 14px; }
+  .guess-btn { padding: 10px 14px; font-size: 0.88rem; min-width: 80px; }
+  .guess-slider-value { font-size: 1.3rem; }
+  .addr-anim-svg { height: 180px; }
+  .addr-anim-title { font-size: 0.95rem; }
+  .addr-anim-btn { font-size: 0.85rem; }
+  .agb-decoder { font-size: 0.88rem; }
+  .decode-translation { font-size: 0.88rem; }
+  .beforeafter-stage { min-height: 110px; padding: 12px; }
+  .ba-icon { font-size: 2.2rem; }
+  .ba-text { font-size: 0.95rem; }
+  .ba-sub { font-size: 0.82rem; }
+  .snapmap-stage { min-height: 180px; }
+  .snapmap-pin { width: 36px; height: 36px; font-size: 1.2rem; }
+  .snapmap-me { width: 40px; height: 40px; font-size: 1.4rem; }
+  .snapmap-pin-name { font-size: 0.7rem; padding: 2px 6px; }
+}
 </style>
 </head>
 <body>
@@ -422,7 +846,28 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
       </div>
     </div>
 
-    <div class="info-box" style="margin-top:32px">
+    <div class="read-bar-wrap" id="read-bar-wrap">
+      <h4>⏱️ Live-Demo: So lange würdest du lesen</h4>
+      <div class="read-bar-row read-bar-wa">
+        <div class="read-bar-label">💬 WhatsApp</div>
+        <div class="read-bar-track"><div class="read-bar-fill" data-bar="wa"></div></div>
+        <div class="read-bar-num"><span data-num="wa">0</span> / 9.000 Wörter</div>
+      </div>
+      <div class="read-bar-row read-bar-snap">
+        <div class="read-bar-label">👻 Snapchat</div>
+        <div class="read-bar-track"><div class="read-bar-fill" data-bar="snap"></div></div>
+        <div class="read-bar-num"><span data-num="snap">0</span> / 12.000 Wörter</div>
+      </div>
+      <div class="read-bar-controls">
+        <button class="read-bar-btn primary" id="read-bar-start">▶︎ Demo starten (im Schnelldurchlauf)</button>
+        <button class="read-bar-btn" id="read-bar-reset">↻ Zurücksetzen</button>
+      </div>
+      <div class="read-bar-status" id="read-bar-status">
+        Klick auf Start – die Schüler:innen sollen miterleben, wie ewig das dauern würde.
+      </div>
+    </div>
+
+    <div class="info-box" style="margin-top:24px">
       <p>👉 <strong>Heutiges Ziel:</strong> Wir lesen die wichtigsten Stellen für dich – damit du weißt, worauf du dich einlässt. Drei Bereiche: <span class="tag tag-wa">WhatsApp</span> <span class="tag tag-snap">Snapchat</span> <span class="tag tag-info">Vergleich</span></p>
     </div>
   </div>
@@ -446,8 +891,21 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
     <h2>Frage 1: Ab wann darfst du WhatsApp nutzen?</h2>
     <p class="lead">Schätze erst – dann auf die Karte klicken zum Auflösen.</p>
 
-    <div class="quiz-card" onclick="this.classList.toggle('open')">
+    <div class="quiz-card" data-guess="slider" data-correct="13" data-min="8" data-max="18">
       <div class="quiz-q"><span class="quiz-icon">🤔</span><span>WhatsApp sagt selbst: <strong>"Du musst mindestens ___ Jahre alt sein."</strong></span></div>
+      <div class="guess-zone">
+        <div class="guess-zone-label">🎯 Erst schätzen, dann auflösen</div>
+        <div class="guess-slider-wrap">
+          <input type="range" class="guess-slider" min="8" max="18" value="13" step="1">
+          <div class="guess-slider-value"><span data-slider-val>13</span> Jahre</div>
+          <div class="guess-slider-scale"><span>8</span><span>13</span><span>18</span></div>
+        </div>
+        <button class="guess-confirm">Tipp abgeben</button>
+        <div class="guess-feedback">
+          <span class="your-tip">Dein Tipp: <strong data-your-tip>?</strong> Jahre</span> ·
+          <span class="real-answer">Echte AGB-Antwort: 13 Jahre</span>
+        </div>
+      </div>
       <div class="reveal-hint">▼ Klick zum Auflösen</div>
       <div class="quiz-a">
         <strong>Antwort: 13 Jahre</strong> – so steht es in den WhatsApp-AGB.
@@ -456,13 +914,81 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
       </div>
     </div>
 
-    <div class="quiz-card" onclick="this.classList.toggle('open')">
+    <div class="quiz-card" data-guess="buttons" data-correct="alle">
       <div class="quiz-q"><span class="quiz-icon">📞</span><span>Wenn du WhatsApp deine Kontakte erlaubst – was passiert dann genau?</span></div>
+      <div class="guess-zone">
+        <div class="guess-zone-label">🎯 Was glaubst du?</div>
+        <div class="guess-buttons">
+          <button class="guess-btn" data-val="keine">Keine Nummern</button>
+          <button class="guess-btn" data-val="nur-app">Nur App-Nutzer:innen</button>
+          <button class="guess-btn" data-val="alle">Alle Nummern</button>
+        </div>
+        <div class="guess-feedback">
+          <span class="real-answer">Echte AGB-Antwort: Alle Nummern aus deinem Adressbuch.</span>
+        </div>
+      </div>
       <div class="reveal-hint">▼ Klick zum Auflösen</div>
       <div class="quiz-a">
         WhatsApp lädt die <strong>Telefonnummern aus deinem Adressbuch hoch</strong> – auf seine Server.
         <div class="agb-quote">"Falls nach geltenden Gesetzen zulässig, kannst du [...] uns regelmäßig die Telefonnummern in deinem Mobil-Adressbuch zur Verfügung stellen, darunter sowohl die Nummern von Benutzer*innen unserer Dienste als auch die von deinen sonstigen Kontakten."</div>
         <span class="punchline">⚠️ <strong>Das heißt:</strong> Auch die Nummer deiner Oma, deines Lehrers, deines Arztes – obwohl die <strong>nie zugestimmt</strong> haben.</span>
+
+        <div class="addr-anim" id="addr-anim">
+          <div class="addr-anim-header">
+            <div class="addr-anim-title">📲 Was wirklich passiert (live)</div>
+            <button class="addr-anim-btn" id="addr-anim-play">▶︎ Animation starten</button>
+          </div>
+          <svg class="addr-anim-svg" viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+            <!-- Handy links -->
+            <rect x="40" y="30" width="170" height="160" rx="20" fill="#1a2336" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+            <rect x="55" y="48" width="140" height="124" rx="6" fill="#0a0e1a"/>
+            <text x="125" y="66" text-anchor="middle" fill="#e8eaf0" font-family="Outfit, sans-serif" font-size="11" font-weight="700">📒 Adressbuch</text>
+            <line x1="65" y1="76" x2="185" y2="76" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <text x="68" y="93" fill="#b0bbcd" font-family="Inter, sans-serif" font-size="10">👵 Oma</text>
+            <text x="68" y="108" fill="#b0bbcd" font-family="Inter, sans-serif" font-size="10">👨‍🏫 Hr. Müller</text>
+            <text x="68" y="123" fill="#b0bbcd" font-family="Inter, sans-serif" font-size="10">⚕️ Dr. Schmidt</text>
+            <text x="68" y="138" fill="#b0bbcd" font-family="Inter, sans-serif" font-size="10">👩 Mama</text>
+            <text x="68" y="153" fill="#b0bbcd" font-family="Inter, sans-serif" font-size="10">🚒 Feuerwehr</text>
+
+            <!-- Server rechts -->
+            <rect x="600" y="40" width="160" height="140" rx="10" fill="#1a2336" stroke="rgba(37,211,102,0.5)" stroke-width="2"/>
+            <rect x="615" y="60" width="130" height="20" rx="3" fill="rgba(37,211,102,0.15)"/>
+            <rect x="615" y="86" width="130" height="20" rx="3" fill="rgba(37,211,102,0.15)"/>
+            <rect x="615" y="112" width="130" height="20" rx="3" fill="rgba(37,211,102,0.15)"/>
+            <rect x="615" y="138" width="130" height="20" rx="3" fill="rgba(37,211,102,0.15)"/>
+            <text x="680" y="32" text-anchor="middle" fill="#25D366" font-family="Outfit, sans-serif" font-size="13" font-weight="700">☁️ WhatsApp-Server</text>
+
+            <!-- Pfeil -->
+            <defs>
+              <marker id="arrow-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0,0 L10,5 L0,10 z" fill="rgba(37,211,102,0.6)"/>
+              </marker>
+            </defs>
+            <line x1="220" y1="110" x2="590" y2="110" stroke="rgba(37,211,102,0.4)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-head)"/>
+            <text x="405" y="100" text-anchor="middle" fill="#b0bbcd" font-family="Outfit, sans-serif" font-size="11">Upload</text>
+
+            <!-- Fliegende Kontakte (werden per JS animiert) -->
+            <g class="addr-contact" data-fly-x="385" data-fly-y="-22" style="--fly-x: 385px; --fly-y: -22px;">
+              <rect x="225" y="118" width="100" height="22" rx="11" fill="rgba(255,255,255,0.1)" stroke="rgba(37,211,102,0.5)"/>
+              <text x="275" y="133" text-anchor="middle" fill="#e8eaf0" font-family="Inter, sans-serif" font-size="11">👵 Oma</text>
+            </g>
+            <g class="addr-contact" data-fly-x="385" data-fly-y="-3" style="--fly-x: 385px; --fly-y: -3px;">
+              <rect x="225" y="118" width="120" height="22" rx="11" fill="rgba(255,255,255,0.1)" stroke="rgba(37,211,102,0.5)"/>
+              <text x="285" y="133" text-anchor="middle" fill="#e8eaf0" font-family="Inter, sans-serif" font-size="11">👨‍🏫 Hr. Müller</text>
+            </g>
+            <g class="addr-contact" data-fly-x="385" data-fly-y="22" style="--fly-x: 385px; --fly-y: 22px;">
+              <rect x="225" y="118" width="124" height="22" rx="11" fill="rgba(255,255,255,0.1)" stroke="rgba(37,211,102,0.5)"/>
+              <text x="287" y="133" text-anchor="middle" fill="#e8eaf0" font-family="Inter, sans-serif" font-size="11">⚕️ Dr. Schmidt</text>
+            </g>
+            <g class="addr-contact" data-fly-x="385" data-fly-y="46" style="--fly-x: 385px; --fly-y: 46px;">
+              <rect x="225" y="118" width="100" height="22" rx="11" fill="rgba(255,255,255,0.1)" stroke="rgba(37,211,102,0.5)"/>
+              <text x="275" y="133" text-anchor="middle" fill="#e8eaf0" font-family="Inter, sans-serif" font-size="11">🚒 Feuerwehr</text>
+            </g>
+          </svg>
+          <div class="addr-anim-caption" id="addr-anim-caption">
+            Klick auf Play – schau, wessen Nummern alle bei WhatsApp landen.
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -482,7 +1008,30 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
     <div class="warn-box">
       <h4>⚠️ Die andere Seite</h4>
       <p>Du gibst WhatsApp eine <strong>weltweite, kostenlose, übertragbare Lizenz</strong> – sie dürfen deine Inhalte nutzen, kopieren, ändern und an andere Firmen weitergeben.</p>
-      <div class="agb-quote">"Du gewährst WhatsApp eine weltweite, nicht-exklusive, gebührenfreie, unterlizenzierbare und übertragbare Lizenz zur Nutzung, Reproduktion, Verbreitung [...] der Informationen, die du auf bzw. über unsere Dienste hochlädst, übermittelst, speicherst, sendest oder empfängst."</div>
+
+      <div class="agb-decoder">
+        "Du gewährst WhatsApp eine
+        <span class="decode-word" data-translate="wa-weltweit">weltweite</span>,
+        nicht-exklusive,
+        <span class="decode-word" data-translate="wa-gebuehrenfrei">gebührenfreie</span>,
+        <span class="decode-word" data-translate="wa-unterlizenz">unterlizenzierbare</span> und
+        <span class="decode-word" data-translate="wa-uebertragbar">übertragbare</span>
+        Lizenz zur Nutzung, Reproduktion, Verbreitung [...] der Informationen, die du auf bzw. über unsere Dienste hochlädst, übermittelst, speicherst, sendest oder empfängst."
+
+        <div class="decode-translation" data-id="wa-weltweit">
+          🌍 <strong>"weltweit"</strong> = WhatsApp darf deine Inhalte überall auf der Welt verwenden – auch in Ländern, in denen es viel weniger Datenschutz gibt als bei uns.
+        </div>
+        <div class="decode-translation" data-id="wa-gebuehrenfrei">
+          💸 <strong>"gebührenfrei"</strong> = sie zahlen dir <em>nichts</em> für die Nutzung. Du gibst die Lizenz quasi geschenkt.
+        </div>
+        <div class="decode-translation" data-id="wa-unterlizenz">
+          🔁 <strong>"unterlizenzierbar"</strong> = WhatsApp darf die Rechte an andere Firmen weitergeben, ohne dich zu fragen. Z.B. an Cloud-Anbieter oder Werbepartner.
+        </div>
+        <div class="decode-translation" data-id="wa-uebertragbar">
+          📦 <strong>"übertragbar"</strong> = wenn WhatsApp irgendwann verkauft wird, geht die Lizenz mit. Der neue Eigentümer darf weitermachen.
+        </div>
+      </div>
+
       <p><strong>Kleiner Trost:</strong> Diese Lizenz ist auf den Zweck "Bereitstellung der Dienste" beschränkt. WhatsApp darf dein Profilbild also nicht auf einer Werbetafel zeigen – aber sie dürfen es speichern, an Server-Dienstleister weitergeben und bis zu 30 Tage auf ihren Servern lagern.</p>
     </div>
 
@@ -498,8 +1047,19 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
     <h2>Frage 3: Trainiert WhatsApp eine KI mit deinen Nachrichten?</h2>
     <p class="lead">Seit Mai 2025 trainiert Meta seine KI ("Meta AI") mit Daten aus Facebook und Instagram. Wie ist das bei WhatsApp?</p>
 
-    <div class="quiz-card" onclick="this.classList.toggle('open')">
+    <div class="quiz-card" data-guess="buttons" data-correct="jein">
       <div class="quiz-q"><span class="quiz-icon">🤖</span><span>Sind deine privaten WhatsApp-Chats vor dem KI-Training sicher?</span></div>
+      <div class="guess-zone">
+        <div class="guess-zone-label">🎯 Was ist dein Tipp?</div>
+        <div class="guess-buttons">
+          <button class="guess-btn" data-val="ja">Ja, sicher</button>
+          <button class="guess-btn" data-val="jein">Jein</button>
+          <button class="guess-btn" data-val="nein">Nein, alles offen</button>
+        </div>
+        <div class="guess-feedback">
+          <span class="real-answer">Echte AGB-Antwort: Jein – normale Chats ja, Meta-AI-Chats nein.</span>
+        </div>
+      </div>
       <div class="reveal-hint">▼ Klick zum Auflösen</div>
       <div class="quiz-a">
         <strong>Jein.</strong> Normale Chats: ja, weil verschlüsselt. <strong>ABER:</strong>
@@ -522,8 +1082,19 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
     <h2>Frage 4: Was passiert, wenn du deinen WhatsApp-Account löschst?</h2>
     <p class="lead">Eine der häufigsten Fragen – die Antwort überrascht viele.</p>
 
-    <div class="quiz-card" onclick="this.classList.toggle('open')">
+    <div class="quiz-card" data-guess="buttons" data-correct="nein">
       <div class="quiz-q"><span class="quiz-icon">🗑️</span><span>Sind nach dem Löschen wirklich <strong>alle</strong> deine Daten weg?</span></div>
+      <div class="guess-zone">
+        <div class="guess-zone-label">🎯 Was glaubst du?</div>
+        <div class="guess-buttons">
+          <button class="guess-btn" data-val="ja">Ja, alles weg</button>
+          <button class="guess-btn" data-val="teilweise">Teilweise</button>
+          <button class="guess-btn" data-val="nein">Nein – wichtige Klauseln bleiben</button>
+        </div>
+        <div class="guess-feedback">
+          <span class="real-answer">Echte AGB-Antwort: Nein. Lizenzen bleiben unbefristet bestehen.</span>
+        </div>
+      </div>
       <div class="reveal-hint">▼ Klick zum Auflösen</div>
       <div class="quiz-a">
         <strong>Nein.</strong> Bestimmte Klauseln aus den AGB <strong>bleiben für immer bestehen</strong>:
@@ -557,25 +1128,87 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
     <h2>Frage 5: Wem gehören deine Stories, Spotlights und Snap-Map-Posts?</h2>
     <p class="lead">Hier wird es <strong style="color:var(--red)">dramatisch</strong>. Lies langsam.</p>
 
-    <div class="quiz-card" onclick="this.classList.toggle('open')">
+    <div class="quiz-card" data-guess="buttons" data-correct="alles">
       <div class="quiz-q"><span class="quiz-icon">⚖️</span><span>Wenn du eine Story postest – was darf Snapchat damit machen?</span></div>
+      <div class="guess-zone">
+        <div class="guess-zone-label">🎯 Was glaubst du?</div>
+        <div class="guess-buttons">
+          <button class="guess-btn" data-val="nichts">Gar nichts ohne mich zu fragen</button>
+          <button class="guess-btn" data-val="begrenzt">Nur kurz für die App</button>
+          <button class="guess-btn" data-val="alles">Alles – weltweit – für immer</button>
+        </div>
+        <div class="guess-feedback">
+          <span class="real-answer">Echte AGB-Antwort: Alles – weltweit – kommerziell – für immer.</span>
+        </div>
+      </div>
       <div class="reveal-hint">▼ Klick zum Auflösen</div>
       <div class="quiz-a">
         <strong>Praktisch alles. Für immer. Ohne dich zu fragen.</strong>
-        <div class="agb-quote">"Da öffentliche Inhalte grundsätzlich öffentlich sind, gewährst du Snap [...] ein <strong>uneingeschränktes, weltweites, gebührenfreies, unwiderrufliches und unbefristetes</strong> Recht und eine Lizenz, daraus abgeleitete Werke zu erstellen, sie zu bewerben, anzuzeigen, auszustrahlen, [...] mit Grafiken und akustischen Effekten zu unterlegen [...] für <strong>kommerzielle und nicht-kommerzielle Zwecke</strong> öffentlich anzuzeigen."</div>
-        <span class="punchline">🚨 <strong>Übersetzt:</strong><br>
-          • <strong>uneingeschränkt</strong> = sie dürfen alles damit machen<br>
-          • <strong>unwiderruflich</strong> = du kannst es nie wieder zurücknehmen<br>
-          • <strong>unbefristet</strong> = für immer, auch wenn du den Account löschst<br>
-          • <strong>kommerziell</strong> = sie verdienen Geld damit – du bekommst <strong>nichts</strong>
-        </span>
+
+        <div class="agb-decoder">
+          "Da öffentliche Inhalte grundsätzlich öffentlich sind, gewährst du Snap [...] ein
+          <span class="decode-word" data-translate="snap-uneingeschraenkt">uneingeschränktes</span>,
+          weltweites, gebührenfreies,
+          <span class="decode-word" data-translate="snap-unwiderruflich">unwiderrufliches</span> und
+          <span class="decode-word" data-translate="snap-unbefristet">unbefristetes</span>
+          Recht und eine Lizenz, daraus abgeleitete Werke zu erstellen, sie zu bewerben, anzuzeigen, auszustrahlen, [...] mit Grafiken und akustischen Effekten zu unterlegen [...] für
+          <span class="decode-word" data-translate="snap-kommerziell">kommerzielle</span>
+          und nicht-kommerzielle Zwecke öffentlich anzuzeigen."
+
+          <div class="decode-translation" data-id="snap-uneingeschraenkt">
+            🛠️ <strong>"uneingeschränkt"</strong> = Snap darf <em>alles</em> mit deinem Inhalt machen: ändern, schneiden, mit Musik unterlegen, in andere Filme einbauen.
+          </div>
+          <div class="decode-translation" data-id="snap-unwiderruflich">
+            🔒 <strong>"unwiderruflich"</strong> = du kannst die Erlaubnis <em>nie wieder</em> zurücknehmen. Auch nicht, wenn du dich verklagst, dich änderst oder älter wirst.
+          </div>
+          <div class="decode-translation" data-id="snap-unbefristet">
+            ♾️ <strong>"unbefristet"</strong> = für <em>immer</em>. Auch in 20, 50 Jahren. Auch wenn du den Account längst gelöscht hast.
+          </div>
+          <div class="decode-translation" data-id="snap-kommerziell">
+            💰 <strong>"kommerziell"</strong> = sie dürfen <em>Geld</em> damit verdienen. Werbung, Verkauf, Lizenzierung – alles erlaubt. Dein Anteil: <strong>0 Cent</strong>.
+          </div>
+        </div>
+
         <p style="margin-top:14px"><strong>Was zählt als "öffentlicher Inhalt"?</strong> Spotlight-Videos, Snap Map-Posts, öffentliche Stories, Inhalte in Lens Studio, sogar dein <strong>Bitmoji-Avatar</strong>!</p>
       </div>
     </div>
 
-    <div class="warn-box">
-      <h4>🎬 Kleines Beispiel</h4>
-      <p>Du tanzt in deinem Zimmer und postest das auf Spotlight. Snap könnte dieses Video <strong>theoretisch</strong> in einer Werbekampagne verwenden, in einem fremden Film verarbeiten, an Geschäftspartner verkaufen oder in 20 Jahren noch zeigen – ganz egal, ob du den Account längst gelöscht hast. Du bekommst <strong>keinen einzigen Cent</strong>.</p>
+    <div class="beforeafter" id="beforeafter">
+      <div class="beforeafter-title">🎬 Was passiert mit deinem Tanzvideo?</div>
+      <div class="beforeafter-stage">
+        <div class="beforeafter-step active ba-step-1" data-step="1">
+          <div class="ba-icon">💃</div>
+          <div class="ba-text">Du tanzt in deinem Zimmer.</div>
+          <div class="ba-sub">10 Sekunden Spaß für deine Freunde.</div>
+        </div>
+        <div class="beforeafter-step ba-step-2" data-step="2">
+          <div class="ba-icon">📤</div>
+          <div class="ba-text">Du postest es auf Spotlight.</div>
+          <div class="ba-sub">"Ich akzeptiere die AGB" – ein Klick.</div>
+        </div>
+        <div class="beforeafter-step ba-step-3" data-step="3">
+          <div class="ba-icon">📺</div>
+          <div class="ba-text">Snap nutzt es in einer Werbung.</div>
+          <div class="ba-sub">In Brasilien. In Australien. Du erfährst es nie.</div>
+        </div>
+        <div class="beforeafter-step ba-step-4" data-step="4">
+          <div class="ba-icon">🎞️</div>
+          <div class="ba-text">Es landet in einem fremden Film.</div>
+          <div class="ba-sub">Mit Musik unterlegt, neu geschnitten, weiterverkauft.</div>
+        </div>
+        <div class="beforeafter-step ba-step-5" data-step="5">
+          <div class="ba-icon">⏰</div>
+          <div class="ba-text">20 Jahre später läuft es noch.</div>
+          <div class="ba-sub">Du hast den Account längst gelöscht. Egal. Du bekommst 0 Cent.</div>
+        </div>
+        <div class="beforeafter-progress"><div class="beforeafter-progress-fill" id="ba-progress"></div></div>
+      </div>
+      <div class="beforeafter-controls">
+        <div class="beforeafter-slider-wrap">
+          <input type="range" class="beforeafter-slider" min="1" max="5" value="1" step="1" id="ba-slider">
+          <div class="beforeafter-step-label" id="ba-label">Schritt 1/5</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -586,8 +1219,20 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
     <h2>Frage 6: Verschwinden Snaps wirklich nach 24 Stunden?</h2>
     <p class="lead">Der Mythos, mit dem Snapchat groß wurde.</p>
 
-    <div class="quiz-card" onclick="this.classList.toggle('open')">
+    <div class="quiz-card" data-guess="buttons" data-correct="ewig">
       <div class="quiz-q"><span class="quiz-icon">⏳</span><span>Wie lange speichert Snapchat <strong>öffentliche</strong> Inhalte (Stories, Spotlight, Snap Map)?</span></div>
+      <div class="guess-zone">
+        <div class="guess-zone-label">🎯 Schätz mal</div>
+        <div class="guess-buttons">
+          <button class="guess-btn" data-val="24h">24 Stunden</button>
+          <button class="guess-btn" data-val="30d">30 Tage</button>
+          <button class="guess-btn" data-val="1j">Bis du löschst</button>
+          <button class="guess-btn" data-val="ewig">Auf unbestimmte Zeit</button>
+        </div>
+        <div class="guess-feedback">
+          <span class="real-answer">Echte AGB-Antwort: Auf unbestimmte Zeit – auch nach dem Löschen.</span>
+        </div>
+      </div>
       <div class="reveal-hint">▼ Klick zum Auflösen</div>
       <div class="quiz-a">
         <strong>Auf "unbestimmte Zeit"</strong> – steht so wörtlich in den AGB.
@@ -596,8 +1241,19 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
       </div>
     </div>
 
-    <div class="quiz-card" onclick="this.classList.toggle('open')">
+    <div class="quiz-card" data-guess="buttons" data-correct="dauerhaft">
       <div class="quiz-q"><span class="quiz-icon">📁</span><span>Was ist mit "Memorys" – dem persönlichen Snap-Speicher?</span></div>
+      <div class="guess-zone">
+        <div class="guess-zone-label">🎯 Tipp abgeben</div>
+        <div class="guess-buttons">
+          <button class="guess-btn" data-val="lokal">Nur auf dem Handy</button>
+          <button class="guess-btn" data-val="dauerhaft">Dauerhaft auf Snap-Servern</button>
+          <button class="guess-btn" data-val="verschluesselt">Verschlüsselt – Snap kann nicht ran</button>
+        </div>
+        <div class="guess-feedback">
+          <span class="real-answer">Echte AGB-Antwort: Dauerhaft auf Snap-Servern – Snap darf jederzeit reinschauen.</span>
+        </div>
+      </div>
       <div class="reveal-hint">▼ Klick zum Auflösen</div>
       <div class="quiz-a">
         Memorys-Inhalte werden <strong>dauerhaft auf Snap-Servern</strong> gespeichert. Außerdem darf Snap <strong>jederzeit</strong> auf alle deine Inhalte zugreifen.
@@ -624,6 +1280,34 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
       <h4>🗺️ Snap Map – dein Standort, live</h4>
       <p>Snap Map zeigt deinen <strong>Live-Standort</strong> an deine Freunde – außer du aktivierst den <strong>Geistmodus</strong>. Inhalte, die du auf Snap Map postest, sind <strong>"öffentliche Inhalte"</strong> mit der unbefristeten Lizenz von Folie 9.</p>
       <p style="margin-top:10px">2025 hat Snap zusätzlich eine Einstellung eingeführt, die <strong>standardmäßig aktiviert</strong> ist: KI-Training mit allem, was öffentlich auf Spotlight und Snap Map landet.</p>
+    </div>
+
+    <div class="snapmap" id="snapmap">
+      <div class="snapmap-header">
+        <div class="snapmap-title">🗺️ Wie Snap Map aussieht – probier den Geistmodus</div>
+        <label class="snapmap-toggle">
+          <span class="snapmap-toggle-label">Geistmodus 👻</span>
+          <span class="snapmap-toggle-track"><span class="snapmap-toggle-thumb">👻</span></span>
+        </label>
+      </div>
+      <div class="snapmap-stage">
+        <div class="snapmap-grid"></div>
+        <div class="snapmap-road snapmap-road-1"></div>
+        <div class="snapmap-road snapmap-road-2"></div>
+        <div class="snapmap-road snapmap-road-3"></div>
+
+        <div class="snapmap-pin" style="top:18%; left:18%;"><span>🎮</span><span class="snapmap-pin-name">Lukas</span></div>
+        <div class="snapmap-pin" style="top:25%; left:65%;"><span>⚽</span><span class="snapmap-pin-name">Jonas</span></div>
+        <div class="snapmap-pin" style="top:55%; left:15%;"><span>🍕</span><span class="snapmap-pin-name">Lina</span></div>
+        <div class="snapmap-pin" style="top:62%; left:75%;"><span>📚</span><span class="snapmap-pin-name">Mia</span></div>
+        <div class="snapmap-pin" style="top:78%; left:42%;"><span>🛒</span><span class="snapmap-pin-name">Tim</span></div>
+        <div class="snapmap-pin" style="top:38%; left:82%;"><span>☕</span><span class="snapmap-pin-name">Emma</span></div>
+
+        <div class="snapmap-me"><span>🤳</span></div>
+      </div>
+      <div class="snapmap-caption" id="snapmap-caption">
+        <strong>Standardmäßig:</strong> alle Freunde sehen, wo du gerade bist – und du siehst alle.
+      </div>
     </div>
 
     <div class="info-box">
@@ -979,6 +1663,217 @@ document.addEventListener('touchend', (e) => {
 });
 
 updateUI();
+
+/* ════════════════════════════════════════════════════
+   INTERAKTIVE KOMPONENTEN
+   ════════════════════════════════════════════════════ */
+
+/* ---------- QUIZ-KARTEN: Schätz-Mechanik + Auflösen ---------- */
+document.querySelectorAll('.quiz-card').forEach(card => {
+  const guessType = card.dataset.guess;
+  const correct = card.dataset.correct;
+
+  // Auflösen erst nach Tipp-Abgabe (oder direkt bei alten Karten ohne Schätz-Zone)
+  function tryReveal() {
+    if (!card.classList.contains('guessed') && card.querySelector('.guess-zone')) return;
+    card.classList.toggle('open');
+  }
+
+  // Klick auf Reveal-Hint oder auf bereits aufgeklappte Karte
+  card.querySelector('.reveal-hint')?.addEventListener('click', e => {
+    e.stopPropagation();
+    tryReveal();
+  });
+  // Klick auf die Frage selbst klappt auch auf (wenn schon getippt)
+  card.querySelector('.quiz-q')?.addEventListener('click', e => {
+    e.stopPropagation();
+    tryReveal();
+  });
+
+  if (guessType === 'slider') {
+    const slider = card.querySelector('.guess-slider');
+    const valSpan = card.querySelector('[data-slider-val]');
+    const confirm = card.querySelector('.guess-confirm');
+    const yourTip = card.querySelector('[data-your-tip]');
+    slider.addEventListener('input', () => {
+      valSpan.textContent = slider.value;
+    });
+    confirm.addEventListener('click', e => {
+      e.stopPropagation();
+      if (yourTip) yourTip.textContent = slider.value;
+      slider.disabled = true;
+      card.classList.add('guessed');
+      card.classList.add('open');  // direkt mit auflösen
+    });
+  }
+
+  if (guessType === 'buttons') {
+    const buttons = card.querySelectorAll('.guess-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (card.classList.contains('guessed')) return;
+        const val = btn.dataset.val;
+        buttons.forEach(b => {
+          b.disabled = true;
+          if (b.dataset.val === correct) b.classList.add('correct');
+          else if (b === btn && val !== correct) b.classList.add('wrong');
+        });
+        if (val === correct) btn.classList.add('selected');
+        card.classList.add('guessed');
+        card.classList.add('open');
+      });
+    });
+  }
+});
+
+/* ---------- LIVE-LESEDAUER (Slide 2) ---------- */
+(function () {
+  const wa = { total: 9000, current: 0, el: document.querySelector('[data-num="wa"]'), bar: document.querySelector('[data-bar="wa"]') };
+  const sn = { total: 12000, current: 0, el: document.querySelector('[data-num="snap"]'), bar: document.querySelector('[data-bar="snap"]') };
+  const status = document.getElementById('read-bar-status');
+  const startBtn = document.getElementById('read-bar-start');
+  const resetBtn = document.getElementById('read-bar-reset');
+  if (!startBtn || !resetBtn) return;
+
+  // Annahme: 200 Wörter/Minute Lesetempo. WhatsApp 9000 → 45 min, Snap 12000 → 60 min
+  // Wir spielen das in 30 Sekunden in 10×-Tempo ab → bedeutet ~3000 W/Min Demo
+  // Pro Tick (50ms) = ~25 Wörter
+  let timer = null;
+
+  function format(n) { return Math.floor(n).toLocaleString('de-DE'); }
+
+  function setNum(s) {
+    s.el.textContent = format(s.current);
+    s.bar.style.width = (s.current / s.total * 100) + '%';
+  }
+
+  function tick() {
+    const stepWa = 30;    // Wörter pro Tick (~9000/300 Ticks = 15s bei 50ms)
+    const stepSn = 40;    // 12000/300 Ticks = 15s
+    let stillRunning = false;
+    if (wa.current < wa.total) { wa.current = Math.min(wa.total, wa.current + stepWa); setNum(wa); stillRunning = true; }
+    if (sn.current < sn.total) { sn.current = Math.min(sn.total, sn.current + stepSn); setNum(sn); stillRunning = true; }
+
+    const waMin = (wa.current / 9000 * 30).toFixed(0);
+    const snMin = (sn.current / 12000 * 40).toFixed(0);
+    status.innerHTML = `📖 In echt wäre das jetzt: <strong>${waMin} Min WhatsApp</strong> + <strong>${snMin} Min Snapchat</strong> Lesen.`;
+
+    if (!stillRunning) {
+      clearInterval(timer); timer = null;
+      status.innerHTML = `🤯 Fertig. <strong>21.000 Wörter</strong> – das wäre echt rund <strong>70 Minuten Lesen</strong>. Macht das jemand? <strong>Nein.</strong>`;
+      startBtn.textContent = '✓ Demo gelaufen';
+    }
+  }
+
+  startBtn.addEventListener('click', () => {
+    if (timer) return;
+    if (wa.current >= wa.total && sn.current >= sn.total) return;
+    startBtn.textContent = '⏸ Läuft...';
+    timer = setInterval(tick, 50);
+  });
+
+  resetBtn.addEventListener('click', () => {
+    if (timer) { clearInterval(timer); timer = null; }
+    wa.current = 0; sn.current = 0; setNum(wa); setNum(sn);
+    startBtn.textContent = '▶︎ Demo starten (im Schnelldurchlauf)';
+    status.innerHTML = 'Klick auf Start – die Schüler:innen sollen miterleben, wie ewig das dauern würde.';
+  });
+})();
+
+/* ---------- ADRESSBUCH-ANIMATION (Slide 4) ---------- */
+(function () {
+  const anim = document.getElementById('addr-anim');
+  const btn = document.getElementById('addr-anim-play');
+  const caption = document.getElementById('addr-anim-caption');
+  if (!anim || !btn) return;
+
+  const contacts = anim.querySelectorAll('.addr-contact');
+
+  function play() {
+    anim.classList.remove('done');
+    anim.classList.add('playing');
+    btn.disabled = true;
+    btn.textContent = '⏳ läuft...';
+    caption.textContent = 'Kontakte werden hochgeladen...';
+    contacts.forEach((c, i) => {
+      c.style.animation = 'none';
+      void c.offsetWidth;
+      setTimeout(() => {
+        c.style.animation = 'addr-fly 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+      }, i * 600);
+    });
+    setTimeout(() => {
+      anim.classList.add('done');
+      caption.innerHTML = '⚠️ <strong>Auch die Nummern von Oma, Lehrer und Arzt</strong> sind jetzt auf WhatsApp-Servern – obwohl sie nie zugestimmt haben.';
+      btn.textContent = '↻ Nochmal';
+      btn.disabled = false;
+    }, contacts.length * 600 + 1300);
+  }
+
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (btn.disabled) return;
+    play();
+  });
+})();
+
+/* ---------- AGB-WORT-DECODER (Slides 5 + 9) ---------- */
+document.querySelectorAll('.decode-word').forEach(word => {
+  word.addEventListener('click', e => {
+    e.stopPropagation();
+    const id = word.dataset.translate;
+    const target = word.closest('.agb-decoder').querySelector(`.decode-translation[data-id="${id}"]`);
+    if (!target) return;
+    const wasOpen = target.classList.contains('show');
+    // Alle Übersetzungen in DIESEM Decoder schließen
+    word.closest('.agb-decoder').querySelectorAll('.decode-translation').forEach(t => t.classList.remove('show'));
+    word.closest('.agb-decoder').querySelectorAll('.decode-word').forEach(w => w.classList.remove('opened'));
+    if (!wasOpen) {
+      target.classList.add('show');
+      word.classList.add('opened');
+    }
+  });
+});
+
+/* ---------- VORHER/NACHHER-SLIDER (Slide 9) ---------- */
+(function () {
+  const slider = document.getElementById('ba-slider');
+  const stage = document.getElementById('beforeafter');
+  const label = document.getElementById('ba-label');
+  const progress = document.getElementById('ba-progress');
+  if (!slider || !stage) return;
+
+  const steps = stage.querySelectorAll('.beforeafter-step');
+  const max = parseInt(slider.max);
+
+  function setStep(n) {
+    steps.forEach(s => s.classList.toggle('active', parseInt(s.dataset.step) === n));
+    label.textContent = `Schritt ${n}/${max}`;
+    progress.style.width = ((n - 1) / (max - 1) * 100) + '%';
+  }
+
+  slider.addEventListener('input', () => setStep(parseInt(slider.value)));
+  setStep(1);
+})();
+
+/* ---------- SNAP MAP TOGGLE (Slide 11) ---------- */
+(function () {
+  const map = document.getElementById('snapmap');
+  const caption = document.getElementById('snapmap-caption');
+  if (!map) return;
+
+  const toggle = map.querySelector('.snapmap-toggle');
+  toggle.addEventListener('click', e => {
+    e.stopPropagation();
+    map.classList.toggle('ghost');
+    if (map.classList.contains('ghost')) {
+      caption.innerHTML = '👻 <strong>Geistmodus aktiv:</strong> niemand sieht mehr deinen Standort. Du bleibst unsichtbar – aber siehst auch nichts mehr von anderen.';
+    } else {
+      caption.innerHTML = '<strong>Standardmäßig:</strong> alle Freunde sehen, wo du gerade bist – und du siehst alle.';
+    }
+  });
+})();
 </script>
 </body>
 </html>
